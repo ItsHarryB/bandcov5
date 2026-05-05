@@ -1,8 +1,6 @@
-import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
 import satori from 'satori';
 import { html } from 'satori-html';
-import sharp from 'sharp';
+import { Resvg } from '@resvg/resvg-wasm';
 import siteConfig from '@/config/site.config';
 
 export interface OGImageOptions {
@@ -11,22 +9,26 @@ export interface OGImageOptions {
   type?: 'website' | 'article';
 }
 
-// Load Inter font for OG images (Satori requires TTF/OTF, not WOFF2)
-// Bundled locally in public/fonts/ to avoid CDN dependency during builds
 let fontCache: ArrayBuffer | null = null;
 
-function loadFont(): ArrayBuffer {
+// Use fetch to grab the font from a CDN. 
+// Cloudflare caches this heavily, bypassing the need for node:fs entirely.
+async function loadFont(): Promise<ArrayBuffer> {
   if (!fontCache) {
-    const fontPath = resolve(process.cwd(), 'public/fonts/inter-latin-400-normal.ttf');
-    fontCache = readFileSync(fontPath).buffer as ArrayBuffer;
+    const response = await fetch(
+      'https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-400-normal.ttf'
+    );
+    fontCache = await response.arrayBuffer();
   }
   return fontCache;
 }
 
-export async function generateOGImage(options: OGImageOptions): Promise<Buffer> {
+// Note: We return Uint8Array here, which is standard for Edge APIs and works perfectly in Astro Responses
+export async function generateOGImage(options: OGImageOptions): Promise<Uint8Array> {
   const { title, description, type = 'website' } = options;
 
-  const fontData = loadFont();
+  // loadFont is now async, so we await it
+  const fontData = await loadFont();
 
   const truncatedDescription = description
     ? description.length > 120
@@ -34,9 +36,7 @@ export async function generateOGImage(options: OGImageOptions): Promise<Buffer> 
       : description
     : '';
 
-  // Create the OG image markup using satori-html
-  // Note: All divs must have explicit display property for Satori
-  // HTML elements must be in the template literal, not interpolated as strings
+  // Your original markup remains exactly the same
   const markup = html`
     <div style="height: 100%; width: 100%; display: flex; flex-direction: column; background: linear-gradient(135deg, #18181b 0%, #27272a 50%, #18181b 100%); padding: 60px 80px; font-family: 'Inter'; position: relative;">
       <div style="display: flex; position: absolute; top: 0; left: 0; width: 8px; height: 100%; background: linear-gradient(180deg, #f97316 0%, #fb923c 50%, #f97316 100%);"></div>
@@ -67,35 +67,19 @@ export async function generateOGImage(options: OGImageOptions): Promise<Buffer> 
     width: 1200,
     height: 630,
     fonts: [
-      {
-        name: 'Inter',
-        data: fontData,
-        weight: 400,
-        style: 'normal',
-      },
-      {
-        name: 'Inter',
-        data: fontData,
-        weight: 500,
-        style: 'normal',
-      },
-      {
-        name: 'Inter',
-        data: fontData,
-        weight: 600,
-        style: 'normal',
-      },
-      {
-        name: 'Inter',
-        data: fontData,
-        weight: 700,
-        style: 'normal',
-      },
+      { name: 'Inter', data: fontData, weight: 400, style: 'normal' },
+      { name: 'Inter', data: fontData, weight: 500, style: 'normal' },
+      { name: 'Inter', data: fontData, weight: 600, style: 'normal' },
+      { name: 'Inter', data: fontData, weight: 700, style: 'normal' },
     ],
   });
 
-  // Convert SVG to PNG
-  return Buffer.from(
-    await sharp(Buffer.from(svg)).resize(1200).png().toBuffer()
-  );
+  // Convert SVG to PNG using resvg-wasm instead of sharp
+  const resvg = new Resvg(svg, {
+    fitTo: { mode: 'width', value: 1200 },
+  });
+  
+  const pngData = resvg.render();
+  
+  return pngData.asPng(); // Returns Uint8Array (Standard for Edge)
 }
