@@ -1,5 +1,13 @@
 ---
 import PageLayout from '@/layouts/PageLayout.astro';
+import Icon from '@/components/ui/primitives/Icon/Icon.astro';
+import Badge from '@/components/ui/data-display/Badge/Badge.astro';
+import Button from '@/components/ui/form/Button/Button.astro';
+import Input from '@/components/ui/form/Input/Input.astro';
+import Textarea from '@/components/ui/form/Textarea/Textarea.astro';
+import Card from '@/components/ui/data-display/Card/Card.astro';
+import { Hero } from '@/components/hero';
+import siteConfig from '@/config/site.config';
 ---
 
 <PageLayout
@@ -7,6 +15,17 @@ import PageLayout from '@/layouts/PageLayout.astro';
   description="Add your description here"
 >
   <!-- Hero Section -->
+  <Hero layout="split" size="lg" showGrid showBlob>
+    <Badge slot="badge" pill pulse>Some of my favourite photographs</Badge>
+
+    <h1 slot="title">
+      Photography
+    </h1>
+
+    <p slot="description">
+      Some of my favourite photographs, taken by me on various trips and adventures. It's one of my favourite hobbies - whether it's taking photos of my cats, or landscapes and cityscapes when I'm out and about.
+    </p>
+  </Hero>
   <section class="py-20 bg-secondary">
     <div class="container">
       <h1 class="text-4xl font-bold text-foreground">Photography</h1>

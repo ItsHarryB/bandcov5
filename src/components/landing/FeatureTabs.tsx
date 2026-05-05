@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Palette, Search, Zap, LayoutGrid, Globe, Copy, Check, Newspaper } from 'lucide-react';
+import { Palette, Search, Zap, LayoutGrid, Globe, Copy, Check, Newspaper, Info, CheckCircle } from 'lucide-react';
 import { VerticalTabs, type VerticalTab } from '@/components/ui/overlay/VerticalTabs';
 
 interface TabContent {
@@ -420,17 +420,17 @@ function CodeBlock({ code, filename, lang }: { code: string; filename: string; l
 
 // Tab definitions with icons for VerticalTabs
 const tabs: VerticalTab[] = [
-  { id: 'theming', label: 'Theming', description: 'Design tokens & dark mode', icon: Palette },
-  { id: 'seo', label: 'SEO & Meta', description: 'OG images & structured data', icon: Search },
-  { id: 'perf', label: 'Performance', description: 'Zero JS by default', icon: Zap },
+  { id: 'theming', label: 'B&Co Version 5', description: 'Major changes with v5', icon:  Info },
+  { id: 'seo', label: 'Improvements', description: 'Improvements compared to v4', icon: CheckCircle },
+  { id: 'perf', label: 'Performance', description: 'Faster performance', icon: Zap },
   {
     id: 'components',
-    label: 'Components',
-    description: 'Type-safe UI primitives',
+    label: 'Visual Changes',
+    description: 'Better visual design and UI changes',
     icon: LayoutGrid,
   },
-  { id: 'i18n', label: 'i18n Ready', description: 'Optional multi-language', icon: Globe },
-  { id: 'content', label: 'Content', description: 'Blog, MDX & search', icon: Newspaper },
+  { id: 'i18n', label: 'More Customisation', description: 'More potential for customisation', icon: Palette },
+  { id: 'content', label: 'More Content', description: 'More features, more content and more potential for future developments', icon: Newspaper },
 ];
 
 export function FeatureTabs() {
@@ -463,13 +463,12 @@ export function FeatureTabs() {
         {/* Header */}
         <div className="mb-[var(--space-section-header)]">
           <h2 className="font-display text-foreground text-3xl font-bold md:text-4xl">
-            Everything you need.
+            The latest from:
             <br />
-            <span className="text-brand-500">Nothing you don't.</span>
+            <span className="text-brand-500">Brighton and Co</span>
           </h2>
           <p className="text-foreground-muted mt-4 max-w-2xl text-lg">
-            We stripped away the bloat and kept the primitives that actually speed up development
-            for agencies and freelancers.
+            Below are the latest features, updates and improvements made to the Brighton and Co site. New features and improvements are being consantly added and refined.
           </p>
         </div>
 

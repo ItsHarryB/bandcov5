@@ -14,19 +14,20 @@ import CTA from '@/components/landing/CTA.astro';
 ---
 
 <LandingLayout
-  title="The Complete Astro Starter"
+  title="Brighton and Co"
   description="Design tokens, accessible components, SEO, and i18n configured from the first commit. Velocity ships what other starters leave as homework."
 >
   <Hero layout="split" size="lg" showGrid showBlob blobPosition="right">
-    <Badge slot="badge" pill pulse>v1.0 Public Beta is Live</Badge>
+    <Badge slot="badge" pill pulse>B&Co v5.0 Public Beta is Live</Badge>
 
     <h1 slot="title">
-      Your next site <span class="text-brand-500">starts here.</span>
+      Welcome to <span class="text-brand-500">Brighton and Co</span>
     </h1>
 
     <p slot="description">
-      Design tokens, accessible components, SEO, and i18n configured from the first commit. Velocity
-      ships what other starters leave as homework.
+      The brand new Brighton and Co site built with Velocity.
+      This site is being actively developed and improved - if you have any feedback or suggestions, please 
+      <a href="/contact" class="text-brand-500 hover:underline">get in touch</a>!
     </p>
 
     <Fragment slot="actions">
@@ -46,16 +47,6 @@ import CTA from '@/components/landing/CTA.astro';
     </Fragment>
 
     <TerminalDemo slot="aside" client:load />
-
-    <SocialProof
-      class="mt-[var(--space-stack-lg)]"
-      text="Shipped to production weekly."
-      avatars={[
-        'https://i.pravatar.cc/150?img=12',
-        'https://i.pravatar.cc/150?img=33',
-        'https://www.southwellmedia.com/_vercel/image?url=%2Fassets%2FMichaelFroseth2025.jpg&w=828&q=90',
-      ]}
-    />
   </Hero>
 
   <TechStack />

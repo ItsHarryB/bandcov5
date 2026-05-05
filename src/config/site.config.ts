@@ -49,7 +49,7 @@ export interface SiteConfig {
 }
 
 const siteConfig: SiteConfig = {
-  name: 'Brighton and Co',
+  name: 'B&Co',
   description: 'Brighton and Co Version 5',
   url: SITE_URL || 'https://new.brightonandco.co.uk',
   ogImage: '/og-default.png',
@@ -66,6 +66,10 @@ const siteConfig: SiteConfig = {
   },
   socialLinks: [
     'https://github.com/ItsHarryB',
+    'https://www.vinted.co.uk/member/272494517',
+    'https://www.linkedin.com/in/harry-brighton-8a2b971a4/',
+    'https://www.ebay.co.uk/usr/itsharryb',
+    'https://instagram.com/ItsHarryB_',
   ],
   // Twitter metadata - update with your actual handles or remove
   // twitter: {
@@ -73,8 +77,8 @@ const siteConfig: SiteConfig = {
   //   creator: '@yourhandle',
   // },
   twitter: {
-    site: '@ItsHarryB',
-    creator: '@ItsHarryB',
+    site: '@ItsHarryB_',
+    creator: '@ItsHarryB_',
   },
   verification: {
     google: GOOGLE_SITE_VERIFICATION,
