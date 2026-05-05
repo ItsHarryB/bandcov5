@@ -11,7 +11,7 @@ export interface SiteConfig {
   address?: {
     street: string;
     city: string;
-    state: string;
+    region: string;
     zip: string;
     country: string;
   };
@@ -49,29 +49,33 @@ export interface SiteConfig {
 }
 
 const siteConfig: SiteConfig = {
-  name: 'Velocity',
-  description: 'A modern website built with Astro and Tailwind CSS',
-  url: SITE_URL || 'https://example.com',
+  name: 'Brighton and Co',
+  description: 'Brighton and Co Version 5',
+  url: SITE_URL || 'https://new.brightonandco.co.uk',
   ogImage: '/og-default.png',
-  author: 'Southwell Media',
+  author: 'Harry B',
   // Demo contact info - replace with your actual business details
-  email: 'hello@example.com',
-  phone: '+1 (555) 123-4567',
+  email: 'contact@web.bandco.uk',
+  phone: '',
   address: {
-    street: '123 Main St',
-    city: 'Dallas',
-    state: 'TX',
-    zip: '75001',
-    country: 'US',
+    street: '',
+    city: '',
+    region: 'Yorkshire',
+    zip: '',
+    country: 'United Kingdom',
   },
   socialLinks: [
-    'https://github.com/southwellmedia',
+    'https://github.com/ItsHarryB',
   ],
   // Twitter metadata - update with your actual handles or remove
   // twitter: {
   //   site: '@yourhandle',
   //   creator: '@yourhandle',
   // },
+  twitter: {
+    site: '@ItsHarryB',
+    creator: '@ItsHarryB',
+  },
   verification: {
     google: GOOGLE_SITE_VERIFICATION,
     bing: BING_SITE_VERIFICATION,
@@ -80,13 +84,13 @@ const siteConfig: SiteConfig = {
   // Replace the SVG files there with your own branding
   branding: {
     logo: {
-      alt: 'Velocity',
+      alt: 'Brighton and Co',
     },
     favicon: {
-      svg: '/favicon.svg',
+      svg: '/bncofavicon-light.png',
     },
     colors: {
-      themeColor: '#F94C10',
+      themeColor: '#009ec2',
       backgroundColor: '#ffffff',
     },
   },
