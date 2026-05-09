@@ -111,7 +111,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     return new Response(
       JSON.stringify({
         success: false,
-        errors: { form: ['An unexpected error occurred'] },
+        errors: { form: [error?.message || 'An unexpected error occurred'] },
       }),
       {
         status: 500,
