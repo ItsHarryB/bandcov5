@@ -4,6 +4,10 @@ import type { APIRoute } from 'astro';
 import { z } from 'astro/zod';
 import { Resend } from 'resend';
 
+// ✅ Astro v6 standard for Cloudflare variables
+// @ts-ignore - Suppressing TS error in case Cloudflare types aren't configured in your tsconfig
+import { env } from 'cloudflare:workers';
+
 const contactSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters').max(100),
   email: z.email('Please enter a valid email address'),
@@ -12,11 +16,11 @@ const contactSchema = z.object({
   honeypot: z.string().max(0), // Anti-spam: must be empty
 });
 
-export const POST: APIRoute = async ({ request, locals }) => {
+// We can remove 'locals' from here now!
+export const POST: APIRoute = async ({ request }) => {
   try {
-    // ✅ Extract the API key safely from Cloudflare's runtime OR local environment
-    // @ts-ignore - Cloudflare locals typing isn't strictly defined by default in Astro
-    const apiKey = locals?.runtime?.env?.RESEND_API_KEY || import.meta.env.RESEND_API_KEY;
+    // ✅ Use the new Cloudflare env import, with a fallback for local development
+    const apiKey = env?.RESEND_API_KEY || import.meta.env.RESEND_API_KEY;
 
     if (!apiKey) {
       throw new Error("Resend API key is missing. Check Cloudflare environment variables.");
@@ -90,7 +94,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       return new Response(
         JSON.stringify({
           success: false,
-          errors: { form: ['Failed to send email. Please try again.'] },
+          errors: { form: [emailResult.error.message || 'Failed to send email. Please try again.'] },
         }),
         {
           status: 500,
