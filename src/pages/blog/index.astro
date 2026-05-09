@@ -7,9 +7,11 @@ import Button from '@/components/ui/form/Button/Button.astro';
 import Badge from '@/components/ui/data-display/Badge/Badge.astro';
 import Icon from '@/components/ui/primitives/Icon/Icon.astro';
 import Input from '@/components/ui/form/Input/Input.astro';
-import CTA from '@/components/ui/marketing/CTA/CTA.astro';
+import CTA2 from '@/components/ui/marketing/CTA/CTA.astro';
 import { Hero } from '@/components/hero';
 import { getCollection } from 'astro:content';
+import CTA from '@/components/landing/CTA.astro';
+
 
 // Get all published posts
 const allPosts = await getCollection('blog', ({ data }) => {
@@ -134,7 +136,7 @@ const getPostUrl = (postId: string) => {
   </section>
 
   <!-- Newsletter CTA Section -->
-  <CTA variant="invert" size="sm" maxWidth="lg">
+  <CTA2 variant="invert" size="sm" maxWidth="lg">
     <h2 slot="heading">Subscribe</h2>
     <p slot="description">Get the latest articles and updates delivered to your inbox.</p>
 
@@ -151,7 +153,8 @@ const getPostUrl = (postId: string) => {
         <Icon name="arrow-right" size="sm" />
       </Button>
     </form>
-  </CTA>
+  </CTA2>
 
   <Footer slot="footer" layout="simple" background="secondary" showCopyright={false} />
+  <CTA />
 </BaseLayout>

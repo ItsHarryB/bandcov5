@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { z } from 'astro/zod';
+import { Resend } from 'resend';
 
 const contactSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters').max(100),
@@ -8,6 +9,10 @@ const contactSchema = z.object({
   message: z.string().min(10, 'Message must be at least 10 characters').max(5000),
   honeypot: z.string().max(0), // Anti-spam: must be empty
 });
+
+// Initialize Resend
+// Note: We use import.meta.env for local dev and Cloudflare env vars
+const resend = new Resend(import.meta.env.RESEND_API_KEY);
 
 export const POST: APIRoute = async ({ request }) => {
   try {
@@ -48,35 +53,51 @@ export const POST: APIRoute = async ({ request }) => {
 
     // Honeypot check (bot detection)
     if (result.data.honeypot) {
-      // Pretend success but don't process
       return new Response(JSON.stringify({ success: true }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
       });
     }
 
-    // Process the submission
-    // In a real application, you would:
-    // - Send an email notification
-    // - Store in a database
-    // - Forward to a CRM
-    // - etc.
+    // Send the email via Resend
+    const emailResult = await resend.emails.send({
+      // Resend provides this test address until you verify your own domain
+      from: 'Contact Form <noreply@contact.bandco.uk>', 
+      to: ['form-enquiries@web.bandco.uk'],
+      replyTo: result.data.email, // Allows you to hit "Reply" in your email client and go to the user
+      subject: `Website Enquiry: ${result.data.subject || 'No Subject'}`,
+      html: `
+        <h2>New Website Enquiry</h2>
+        <p><strong>Name:</strong> ${result.data.name}</p>
+        <p><strong>Email:</strong> ${result.data.email}</p>
+        <p><strong>Subject:</strong> ${result.data.subject}</p>
+        <hr />
+        <p><strong>Message:</strong></p>
+        <p>${result.data.message.replace(/\n/g, '<br>')}</p>
+      `,
+    });
 
-    // For now, we just log it (in production, replace with actual handling)
-    if (import.meta.env.DEV) {
-      // eslint-disable-next-line no-console
-      console.log('Contact form submission:', {
-        name: result.data.name,
-        email: result.data.email,
-        subject: result.data.subject,
-        message: result.data.message,
-      });
+    // Check if Resend rejected the email
+    if (emailResult.error) {
+      console.error('Resend API Error:', emailResult.error);
+      return new Response(
+        JSON.stringify({
+          success: false,
+          errors: { form: ['Failed to send email. Please try again.'] },
+        }),
+        {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
     }
 
+    // Success!
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
+
   } catch (error) {
     console.error('Contact form error:', error);
 

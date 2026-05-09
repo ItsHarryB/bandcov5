@@ -9,34 +9,34 @@ interface TabContent {
 
 const tabContent: Record<string, TabContent> = {
   theming: {
-    title: 'Design Tokens & Dark Mode',
+    title: 'Brighton and Co Version 5',
     content:
-      "Complete design system using Tailwind v4's CSS-first configuration with built-in dark mode. Semantic color tokens, system preference detection, and localStorage persistence.",
+      "Based on the Velocity template by Southwell Media. This theme teplate leverages a large number of pre-built components, which are then tailored to Brighton and Co.",
   },
   seo: {
-    title: 'Automated SEO Handling',
+    title: 'Improvements to Brighton and Co',
     content:
-      'Strictly typed metadata injection for every page with automatic OG image generation. Includes sitemap, robots.txt, and JSON-LD structured data.',
+      'A completely brand new look, with more fluid, uniform styling and animations.',
   },
   perf: {
-    title: 'Zero JS by Default',
+    title: 'Better and Faster',
     content:
-      "Astro's island architecture ensures your pages ship 0kb of JavaScript unless explicitly interactive. Optimized for Core Web Vitals.",
+      "Brighton and Co Version 5 uses pre-built components, built to be as lightweight and efficient as possible, whilst remaining fully accessible to every user.",
   },
   components: {
-    title: 'Type-Safe Components',
+    title: 'A Range of Visual Changes',
     content:
-      'TypeScript-first UI primitives with full prop validation and IDE autocompletion. Includes buttons, inputs, cards, modals, and more.',
+      'With Brighton and Co Version 5, the site has a completely refreshed look and feel, with more fluid animations. Moreover, a more comprehensive design system provides a more uniform and cohesive website design.',
   },
   i18n: {
-    title: 'i18n Ready',
+    title: 'More Potential for Customisation',
     content:
-      'Add multi-language support with the --i18n flag. Includes type-safe translations, automatic locale detection, and SEO-friendly URL structures.',
+      'With the range of components available with the Velocity theme template, there are far greater options and much greater potential for future developments to Brighton and Co.',
   },
   content: {
-    title: 'Content & Search',
+    title: 'More Content',
     content:
-      'Type-safe content collections with Zod schemas, MDX support, RSS feeds, and Pagefind integration for lightning-fast static search.',
+      'The potential for more content and features for the site is seemingly exponentially increased with the Velocity theme teplate. Blog posts in particular will benefit from this new design.',
   },
 };
 

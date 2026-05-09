@@ -13,11 +13,12 @@ import Card from '@/components/ui/data-display/Card/Card.astro';
 import { Hero } from '@/components/hero';
 import GoogleMap from '@/components/ui/data-display/GoogleMap/GoogleMap.astro';
 import siteConfig from '@/config/site.config';
+import CTA from '@/components/landing/CTA.astro';
 ---
 
 <PageLayout
   title="Contact Us"
-  description="Get in touch with the Velocity team."
+  description="Get in touch with Brighton and Co."
 >
   <Hero layout="centered" size="sm" showGrid>
     <Badge slot="badge" pill pulse>Get in Touch</Badge>
@@ -44,7 +45,7 @@ import siteConfig from '@/config/site.config';
               label="Your Name"
               name="name"
               type="text"
-              placeholder="John Doe"
+              placeholder="Joe Bloggs"
               required
               autocomplete="name"
             />
@@ -53,7 +54,7 @@ import siteConfig from '@/config/site.config';
               label="Email Address"
               name="email"
               type="email"
-              placeholder="john@example.com"
+              placeholder="joe@example.com"
               required
               autocomplete="email"
             />
@@ -63,12 +64,13 @@ import siteConfig from '@/config/site.config';
               name="subject"
               type="text"
               placeholder="How can we help?"
+              required
             />
 
             <Textarea
               label="Message"
               name="message"
-              placeholder="Tell us more about your project or question..."
+              placeholder="Tell us more about your question..."
               rows={5}
               required
             />
@@ -165,6 +167,7 @@ import siteConfig from '@/config/site.config';
       </div>
     </div>
   </section>
+  <CTA />
 </PageLayout>
 
 <script>
@@ -178,7 +181,7 @@ import siteConfig from '@/config/site.config';
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      button.disabled = true;
+      button.disabled = false;
       button.textContent = 'Sending...';
       message.classList.add('hidden');
 
