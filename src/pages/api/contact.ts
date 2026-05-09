@@ -1,4 +1,4 @@
-export const prerender = false; // 
+export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { z } from 'astro/zod';
@@ -12,11 +12,19 @@ const contactSchema = z.object({
   honeypot: z.string().max(0), // Anti-spam: must be empty
 });
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const resend = new Resend(import.meta.env.RESEND_API_KEY);
-    const formData = await request.formData();
+    // ✅ Extract the API key safely from Cloudflare's runtime OR local environment
+    // @ts-ignore - Cloudflare locals typing isn't strictly defined by default in Astro
+    const apiKey = locals?.runtime?.env?.RESEND_API_KEY || import.meta.env.RESEND_API_KEY;
 
+    if (!apiKey) {
+      throw new Error("Resend API key is missing. Check Cloudflare environment variables.");
+    }
+
+    const resend = new Resend(apiKey);
+    
+    const formData = await request.formData();
 
     const data = {
       name: formData.get('name')?.toString() || '',
@@ -61,10 +69,9 @@ export const POST: APIRoute = async ({ request }) => {
 
     // Send the email via Resend
     const emailResult = await resend.emails.send({
-      // Resend provides this test address until you verify your own domain
       from: 'Contact Form <noreply@contact.bandco.uk>', 
       to: ['form-enquiries@web.bandco.uk'],
-      replyTo: result.data.email, // Allows you to hit "Reply" in your email client and go to the user
+      replyTo: result.data.email, 
       subject: `Website Enquiry: ${result.data.subject || 'No Subject'}`,
       html: `
         <h2>New Website Enquiry</h2>
