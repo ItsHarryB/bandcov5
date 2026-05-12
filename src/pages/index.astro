@@ -11,6 +11,7 @@ import FeatureTabs from '@/components/landing/FeatureTabs.tsx';
 import LighthouseScores from '@/components/landing/LighthouseScores.astro';
 import Credibility from '@/components/landing/Credibility.astro';
 import CTA from '@/components/landing/CTA.astro';
+import packageData from '../../package.json';
 
 // Import the React components
 import { ScrollArea } from "@/components/ui/overlay/ScrollArea/scroll-area";
@@ -56,7 +57,7 @@ const siteUpdates = [
   description="Design tokens, accessible components, SEO, and i18n configured from the first commit. Velocity ships what other starters leave as homework."
 >
   <Hero layout="split" size="lg" showBlob blobPosition="right">
-    <Badge slot="badge" pill pulse>B&Co v0.5.2.0a Public Beta is Live</Badge>
+    <Badge slot="badge" pill pulse>B&Co v{packageData.version} Public Beta is Live</Badge>
 
     <h1 slot="title">
       Welcome to <span class="text-brand-500">Brighton and Co</span>
