@@ -66,8 +66,7 @@ const fullUrl = new URL(Astro.url.pathname, Astro.site).toString();
     position="fixed"
     size="lg"
     showActiveState
-    showCta
-    cta={{ label: 'View Docs', href: 'https://docs.deployvelocity.com' }}
+    showCta={false}
     extraNav={[{ label: 'Features', href: '#features' }]}
     actions={[
       {

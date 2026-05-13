@@ -11,11 +11,28 @@ import Input from '@/components/ui/form/Input/Input.astro';
 import Textarea from '@/components/ui/form/Textarea/Textarea.astro';
 import Card from '@/components/ui/data-display/Card/Card.astro';
 import { Hero } from '@/components/hero';
-import GoogleMap from '@/components/ui/data-display/GoogleMap/GoogleMap.astro';
 import siteConfig from '@/config/site.config';
 import CTA from '@/components/landing/CTA.astro';
 import Toast from '@/components/ui/feedback/Toast/Toast.astro';
 import { Separator } from '@/components/ui';
+import Accordion from '@/components/ui/overlay/Accordion/Accordion.astro';
+const contactFaqs = [
+  {
+    title: "How can I contact B&Co?",
+    content: "Simply fill out the contact form on this page. Please include your name, email address, subject and your message.",
+    defaultOpen: true,
+  },
+  {
+    title: "When will I receive a response?",
+    content: "The aim is to respond to all messages as soon as possible, but please allow up to 48 hours for a response, especially during busy periods.",
+    defaultOpen: false,
+  },
+  {
+    title: "What is your return policy?",
+    content: "We accept returns within 14 days of delivery, provided the item is in its original, unworn condition with all packaging intact.",
+    defaultOpen: false,
+  }
+];
 ---
 
 <PageLayout
@@ -26,7 +43,7 @@ import { Separator } from '@/components/ui';
     <Badge slot="badge" pill pulse>Get in Touch</Badge>
 
     <h1 slot="title">
-      Let's <span class="text-brand-500">connect.</span>
+      Contact <span class="text-brand-500">B&Co</span>
     </h1>
 
     <p slot="description">
@@ -90,15 +107,19 @@ import { Separator } from '@/components/ui';
             </Button>
           </form>
         </Card>
-
-        <!-- Right column: Map + Contact Info -->
-        <div class="flex flex-col gap-8">
-          {/* Map */}
-          <GoogleMap
-            size="sm"
-            ariaLabel={`Map showing ${siteConfig.name} location`}
-            placeholderTitle="Our Location"
-          />
+      <div class="flex flex-col gap-12">
+        {/* FAQ Accordion replacing the Map */}
+          <div>
+            <h2 class="font-display text-2xl font-bold text-foreground mb-6">
+              Quick answers
+            </h2>
+            <Accordion 
+              items={contactFaqs} 
+              variant="card" 
+              size="md" 
+              exclusive={true}
+            />
+          </div>
 
           {/* Contact Info */}
           <div>
@@ -121,7 +142,6 @@ import { Separator } from '@/components/ui';
                   </div>
                 </Card>
               </a>
-
               <!-- GitHub -->
               <a
                 href="https://github.com/ItsHarryB"
