@@ -1,6 +1,6 @@
 {
   "name": "bandcov5",
-  "version": "0.5.5.2",
+  "version": "0.5.6.1",
   "description": "Brighton and Co Version 5.",
   "type": "module",
   "author": "Harry B",
@@ -15,7 +15,24 @@
     "blog",
     "starter",
     "boilerplate",
-    "seo"
+    "seo",
+    "Brighton",
+    "Brighton and Co",
+    "brighton",
+    "brighton and co",
+    "bandco",
+    "BandCo",
+    "b&co",
+    "B&Co",
+    "Harry",
+    "Harry B",
+    "harry",
+    "harry b",
+    "harryb",
+    "Harry Brighton",
+    "HarryBrighton",
+    "harry brighton",
+    "harrybrighton"
   ],
   "scripts": {
     "dev": "astro dev",
