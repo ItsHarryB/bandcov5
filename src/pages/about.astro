@@ -12,6 +12,15 @@ import CTA from '@/components/landing/CTA.astro';
 import Accordion from '@/components/ui/overlay/Accordion';
 import Separator from '@/components/ui/layout/Separator';
 import TechStack from '@/components/landing/TechStack.astro';
+import { ImageCarousel } from '@/components/ui/content/ImageCarousel';
+
+import pennyImg from '../assets/images/cats/penny.jpg';
+import poppyImg from '../assets/images/cats/poppy.jpg';
+import lunaImg from '../assets/images/cats/luna.jpg';
+
+import badmintonImg from '../assets/images/hobbies/badminton.jpg';
+import computerImg from '../assets/images/hobbies/mycomputer.jpg';
+import gymImg from '../assets/images/hobbies/atgym.jpg';
 
 const webinfo = [
   {
@@ -40,20 +49,29 @@ const webinfo = [
     content: "The potential for more content and features for the site is seemingly exponentially increased with the Velocity theme teplate. Blog posts in particular will benefit from this new design.",
   }
 ]
+
+const catPhotos = [
+  { src: pennyImg.src, alt: "Penny, a British shorthair black cat with orange eyes, laid by the window." },
+  { src: poppyImg.src, alt: "Poppy, a British shorthair blue cat, with orange eyes, stood up by the window." },
+  { src: lunaImg.src, alt: "Luna, a British shorthair fawn-coloured cat, with orange eyes sat like a loaf on a similar coloured carpet." },
+];
+
+const hobbyPhotos = [
+  { src: badmintonImg.src, alt: "Me and my girlfriend playing badminton." },
+  { src: computerImg.src, alt: "The internals of a Desktop PC I had." },
+  { src: gymImg.src, alt: "A photo of some dumbbells at the gym." },
+];
 ---
 
 <PageLayout
   title="About"
   description="About Brighton and Co - who we are, what this site is, and more."
 >
-  <!-- Hero Section -->
   <Hero layout="centered" size="sm">
     <Badge slot="badge" pill pulse>Want to know more about B&CO?</Badge>
-
     <h1 slot="title">
       About <span class="text-brand-500">B&CO</span>
     </h1>
-
     <p slot="description">
       Learn more about Brighton and Co - who made what you're looking at right now, and more.
     </p>
@@ -61,23 +79,43 @@ const webinfo = [
   
   <section class="py-16">
       <div class="container max-w-4xl">
-        <h1 class="text-4xl font-bold text-foreground mb-8">Some key information about the site:</h1>
+        <h2 class="text-4xl font-bold text-foreground mb-8">Some key information about the site:</h2>
         <Accordion 
          items={webinfo} 
          variant="card" 
-          size="lg" 
-          exclusive={true}
+         size="lg" 
+         exclusive={true}
       />
     </div>
   </section>
 
-  <!-- Content Section -->
-  <section class="py-16">
-    <div class="container">
-      <!-- Your content -->
+  <section class="py-16 bg-surface-secondary border-y border-border">
+    <div class="container max-w-6xl">
+      
+      {/* The new 2-column grid layout! */}
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-start">
+        
+        <div class="flex flex-col gap-6">
+          <div class="text-center lg:text-left">
+            <h2 class="text-3xl font-bold text-foreground">Meet the Cats</h2>
+            <p class="text-foreground-muted mt-2">The real bosses behind Brighton and Co.</p>
+          </div>
+          <ImageCarousel images={catPhotos} client:visible />
+        </div>
+
+        <div class="flex flex-col gap-6">
+          <div class="text-center lg:text-left">
+            <h2 class="text-3xl font-bold text-foreground">Hobbies & Interests</h2>
+            <p class="text-foreground-muted mt-2">What I'm up to when I'm not writing code.</p>
+          </div>
+          <ImageCarousel images={hobbyPhotos} client:visible />
+        </div>
+
+      </div>
+
     </div>
   </section>
-    <TechStack />
 
+  <TechStack />
   <CTA />
 </PageLayout>

@@ -4,11 +4,7 @@ import { Hero } from '@/components/hero';
 import Button from '@/components/ui/form/Button/Button.astro';
 import Badge from '@/components/ui/data-display/Badge/Badge.astro';
 import Icon from '@/components/ui/primitives/Icon/Icon.astro';
-import SocialProof from '@/components/ui/marketing/SocialProof/SocialProof.astro';
-import { TerminalDemo } from '@/components/ui/marketing/TerminalDemo';
-import TechStack from '@/components/landing/TechStack.astro';
 import FeatureTabs from '@/components/landing/FeatureTabs.tsx';
-import Credibility from '@/components/landing/Credibility.astro';
 import CTA from '@/components/landing/CTA.astro';
 import packageData from '../../package.json';
 import { Card } from '@/components/ui';
@@ -145,9 +141,7 @@ import SiteUpdates from '@/components/landing/SiteUpdates.astro';
         <div class="w-full flex flex-col lg:col-span-7 border-l-0 lg:border-l border-border lg:pl-12">
           <FeatureTabs client:visible />
         </div>
-
       </div>
-
     </div>
   </section>
   <Separator orientation="horizontal" class="my-20" />
