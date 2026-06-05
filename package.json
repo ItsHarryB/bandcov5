@@ -1,6 +1,6 @@
 {
   "name": "bandcov5",
-  "version": "0.5.7.1",
+  "version": "0.5.7.2",
   "description": "Brighton and Co Version 5.",
   "type": "module",
   "author": "Harry B",
@@ -49,15 +49,15 @@
     "generate-types": "wrangler types"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^13.5.0",
-    "@astrojs/mdx": "^5.0.4",
-    "@astrojs/react": "^5.0.4",
-    "@astrojs/sitemap": "^3.7.2",
+    "@astrojs/cloudflare": "^13.6.1",
+    "@astrojs/mdx": "^6.0.2",
+    "@astrojs/react": "^5.0.7",
+    "@astrojs/sitemap": "^3.7.3",
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
     "@fontsource-variable/manrope": "^5.2.8",
     "@fontsource-variable/outfit": "^5.2.8",
     "@resvg/resvg-wasm": "^2.6.2",
-    "astro": "^6.3.1",
+    "astro": "^6.4.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "embla-carousel-react": "^8.6.0",
