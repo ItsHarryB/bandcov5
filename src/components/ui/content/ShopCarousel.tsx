@@ -1,7 +1,6 @@
 import * as React from "react"
 import { X } from "lucide-react"
 import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures" 
-import { SiVinted, SiEbay } from "react-icons/si"
 import {
   Carousel,
   CarouselContent,
@@ -165,15 +164,9 @@ export function ShopCarousel({ products, storeName }: ShopCarouselProps) {
   if (!products || products.length === 0) return null;
 
   const gradientStyle = { background: 'linear-gradient(135deg, #ff0055, #ff2e43)' };
-  const profileUrl = storeName === "Vinted" ? "https://vinted.co.uk/member/..." : "https://ebay.co.uk/usr/...";
-  const BrandIcon = storeName === "Vinted" ? SiVinted : SiEbay;
-  const brandColor = storeName === "Vinted" ? "#017573" : "#0064D2";
 
   return (
-    <div className="space-y-6">
-      <a href={profileUrl} target="_blank" className="inline-block hover:opacity-80 transition-opacity">
-        <BrandIcon className="w-16 h-16" color={brandColor} />
-      </a>
+    
 
       <Carousel 
         opts={{ align: "start", dragFree: true }} 
@@ -193,6 +186,5 @@ export function ShopCarousel({ products, storeName }: ShopCarouselProps) {
         <CarouselPrevious className="flex left-0 md:-left-4 bg-background shadow-md border-border" />
         <CarouselNext className="flex right-0 md:-right-4 bg-background shadow-md border-border" />
       </Carousel>
-    </div>
   )
 }
