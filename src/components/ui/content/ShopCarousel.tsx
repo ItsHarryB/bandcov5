@@ -1,6 +1,7 @@
 import * as React from "react"
 import { X } from "lucide-react"
 import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures" 
+import { SiVinted, SiEbay } from "react-icons/si"
 import {
   Carousel,
   CarouselContent,
@@ -55,7 +56,6 @@ function ProductCard({ product, storeName, gradientStyle }: { product: Product, 
                 src={img} 
                 alt={`${product.title} - Image ${i + 1}`} 
                 className="absolute inset-0 object-cover w-full h-full"
-                // CHANGED: Transitions completely removed for an instant hard-snap
                 style={{
                   opacity: activeIndex === i ? 1 : 0,
                   zIndex: activeIndex === i ? 0 : -10
@@ -65,7 +65,8 @@ function ProductCard({ product, storeName, gradientStyle }: { product: Product, 
               />
             ))}
 
-            <div className="absolute inset-0 z-10 flex">
+            {/* CHANGED: Added 'hidden md:flex' so mobile taps don't accidentally trigger the hover hitboxes */}
+            <div className="absolute inset-0 z-10 hidden md:flex">
               {product.images.map((_, i) => (
                 <div 
                   key={i} 
@@ -127,13 +128,13 @@ function ProductCard({ product, storeName, gradientStyle }: { product: Product, 
                 <CarouselItem key={i} className="h-full flex items-center justify-center pl-0">
                   <div className="relative flex items-center justify-center w-full h-full p-4 md:p-8">
                     
+                    {/* CHANGED: Added role="button" and cursor-pointer to fix mobile click delegation bugs */}
                     <DialogClose asChild>
-                      <div className="absolute inset-0 z-0 cursor-default" />
+                      <div role="button" className="absolute inset-0 z-0 cursor-pointer md:cursor-default" aria-label="Close Lightbox" />
                     </DialogClose>
 
                     <div className="relative z-10 group/lightbox pointer-events-auto w-full max-w-[85vw] md:max-w-none md:w-auto max-h-[70vh] md:h-full md:max-h-[85vh] aspect-[3/4] rounded-lg shadow-2xl drop-shadow-2xl overflow-hidden bg-black/5">
                       
-                      {/* CHANGED: Removed transition-transform to keep lightbox rendering completely static */}
                       <img 
                         src={img} 
                         alt={`${product.title} - Expanded Image ${i + 1}`} 
@@ -164,25 +165,34 @@ export function ShopCarousel({ products, storeName }: ShopCarouselProps) {
   if (!products || products.length === 0) return null;
 
   const gradientStyle = { background: 'linear-gradient(135deg, #ff0055, #ff2e43)' };
+  const profileUrl = storeName === "Vinted" ? "https://vinted.co.uk/member/..." : "https://ebay.co.uk/usr/...";
+  const BrandIcon = storeName === "Vinted" ? SiVinted : SiEbay;
+  const brandColor = storeName === "Vinted" ? "#017573" : "#0064D2";
 
   return (
-    <Carousel 
-      opts={{ align: "start", dragFree: true }} 
-      plugins={[WheelGesturesPlugin()]} 
-      className="w-full px-4 md:px-0"
-    >
-      <CarouselContent className="-ml-4">
-        {products.map((product) => (
-          <CarouselItem key={product.id} className="pl-4 basis-[85%] sm:basis-[60%] md:basis-1/2 lg:basis-1/3">
-            <div className="p-1 h-full">
-              <ProductCard product={product} storeName={storeName} gradientStyle={gradientStyle} />
-            </div>
-          </CarouselItem>
-        ))}
-      </CarouselContent>
-      
-      <CarouselPrevious className="flex left-0 md:-left-4 bg-background shadow-md border-border" />
-      <CarouselNext className="flex right-0 md:-right-4 bg-background shadow-md border-border" />
-    </Carousel>
+    <div className="space-y-6">
+      <a href={profileUrl} target="_blank" className="inline-block hover:opacity-80 transition-opacity">
+        <BrandIcon className="w-16 h-16" color={brandColor} />
+      </a>
+
+      <Carousel 
+        opts={{ align: "start", dragFree: true }} 
+        plugins={[WheelGesturesPlugin()]} 
+        className="w-full px-4 md:px-0"
+      >
+        <CarouselContent className="-ml-4">
+          {products.map((product) => (
+            <CarouselItem key={product.id} className="pl-4 basis-[85%] sm:basis-[60%] md:basis-1/2 lg:basis-1/3">
+              <div className="p-1 h-full">
+                <ProductCard product={product} storeName={storeName} gradientStyle={gradientStyle} />
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        
+        <CarouselPrevious className="flex left-0 md:-left-4 bg-background shadow-md border-border" />
+        <CarouselNext className="flex right-0 md:-right-4 bg-background shadow-md border-border" />
+      </Carousel>
+    </div>
   )
 }
