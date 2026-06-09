@@ -17,7 +17,6 @@ export const navItems: NavItem[] = [
   { label: 'Blog', href: '/blog', order: 3 },
   { label: 'Photography', href: '/photography', order: 4 },
   { label: 'Contact', href: '/contact', order: 5 },
-  { label: 'Components', href: '/components', order: 8 },
 
 ];
 

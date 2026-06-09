@@ -22,7 +22,11 @@ import SiteUpdates from '@/components/landing/SiteUpdates.astro';
   title="Brighton and Co"
   description="Design tokens, accessible components, SEO, and i18n configured from the first commit. Velocity ships what other starters leave as homework."
 >
-  <Hero layout="split" size="md" showBlob blobPosition="right">
+  <Hero 
+  layout="split" 
+  size="md" 
+  showBlob blobPosition="right"
+  >
     <Badge slot="badge" pill pulse>B&Co v{packageData.version} Public Beta is Live</Badge>
 
     <h1 slot="title">
@@ -88,7 +92,7 @@ import SiteUpdates from '@/components/landing/SiteUpdates.astro';
           </a>
           <div class="flex flex-col flex-auto ml-4 md:ml-0 md:p-6 md:pt-2">
             <h2 class="text-lg md:text-xl font-bold text-foreground">Get in Touch</h2>
-            <p class="hidden md:block mt-2 text-sm md:text-base text-foreground-muted">Have a question or suggestion? Send us a message.</p>
+            <p class="hidden md:block mt-2 text-sm md:text-base text-foreground-muted">Have a question or suggestion? Send a message.</p>
             <div class="mt-1 md:mt-4 flex items-center justify-start md:justify-end mt-auto">
               <a href="/contact" class="text-sm font-semibold text-brand-500 hover:underline">Contact Us &rarr;</a>
             </div>
