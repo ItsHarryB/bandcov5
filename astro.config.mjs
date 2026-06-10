@@ -3,7 +3,7 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
-import { passthroughImageService } from "astro/config"; // ✅ 1. ADD THIS IMPORT
+import { passthroughImageService } from "astro/config"; 
 
 export default defineConfig({
   site: process.env.SITE_URL || 'https://example.com',
@@ -24,7 +24,7 @@ export default defineConfig({
   },
 
   image: {
-    service: passthroughImageService(), // ✅ 2. ADD THIS TO STOP THE CRASHES
+    service: passthroughImageService(), 
   },
 
   integrations: [
@@ -47,5 +47,6 @@ export default defineConfig({
       wrap: true,
     },
   },
-  output: 'static',
+  
+  output: 'static'
 });
