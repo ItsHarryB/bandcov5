@@ -1,7 +1,6 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import Header from '@/components/layout/Header.astro';
-import Footer from '@/components/layout/Footer.astro';
+// CHANGED: Using PageLayout instead of BaseLayout
+import PageLayout from '@/layouts/PageLayout.astro';
 import BlogCard from '@/components/blog/BlogCard.astro';
 import Button from '@/components/ui/form/Button/Button.astro';
 import Badge from '@/components/ui/data-display/Badge/Badge.astro';
@@ -37,38 +36,23 @@ const getPostUrl = (postId: string) => {
 };
 ---
 
-<BaseLayout title="Blog" description="Latest articles and updates">
-  <Header
-    slot="header"
-    position="fixed"
-    size="lg"
-    showActiveState
-    showCta={false}
-    cta={{ label: 'View Docs', href: 'https://docs.deployvelocity.com' }}
-    extraNav={[]}
-    actions={[
-      {
-        icon: 'github',
-        href: 'https://github.com/southwellmedia/velocity',
-        label: 'View on GitHub',
-        iconOnly: true,
-        target: '_blank',
-      },
-    ]}
-  />
+{/* CHANGED: Using PageLayout to automatically add the top padding */}
+<PageLayout title="Blog" description="Latest articles and updates">
+  {/* DELETED the <Header> override here so it uses the centralized one built into PageLayout */}
 
-  <Hero layout="split" size="sm" class="bg-surface-secondary border-b border-border">
+  <Hero layout="centered" size="sm" class="bg-surface-secondary border-b border-border">
     <Badge slot="badge">
       <Icon name="book" size="sm" class="text-brand-500" />
       All posts
     </Badge>
 
-    <h1 slot="title">Blog</h1>
+    <h1 slot="title">
+      <span class="text-brand-500">Brighton and Co</span> Blog
+    </h1>
 
     <p slot="description">Latest articles and updates</p>
   </Hero>
 
-  <!-- Featured Posts Section -->
   {
     featuredPosts.length > 0 && (
       <section class="bg-background py-16">
@@ -99,7 +83,6 @@ const getPostUrl = (postId: string) => {
     )
   }
 
-  <!-- All Posts Section -->
   <section class="bg-background-secondary py-16">
     <div class="mx-auto max-w-6xl px-6">
       {
@@ -135,7 +118,6 @@ const getPostUrl = (postId: string) => {
     </div>
   </section>
 
-  <!-- Newsletter CTA Section -->
   <CTA2 variant="invert" size="sm" maxWidth="lg">
     <h2 slot="heading">Subscribe</h2>
     <p slot="description">Get the latest articles and updates delivered to your inbox.</p>
@@ -156,4 +138,4 @@ const getPostUrl = (postId: string) => {
   </CTA2>
 
   <CTA />
-</BaseLayout>
+</PageLayout>

@@ -16,6 +16,7 @@ import CTA from '@/components/landing/CTA.astro';
 import Toast from '@/components/ui/feedback/Toast/Toast.astro';
 import { Separator } from '@/components/ui';
 import Accordion from '@/components/ui/overlay/Accordion/Accordion.astro';
+
 const contactFaqs = [
   {
     title: "How can I contact B&Co?",
@@ -29,10 +30,12 @@ const contactFaqs = [
   },
   {
     title: "What if I have a general question about B&Co?",
-  content: "If you have a general question about Brighton and Co - especially about this site, you may find your answer on the About page.",    
+    content: "If you have a general question about Brighton and Co - especially about this site, you may find your answer on the About page.",    
     defaultOpen: false,
   }
 ];
+
+const accessKey = import.meta.env.PUBLIC_WEB3FORMS_ACCESS_KEY;
 ---
 
 <PageLayout
@@ -59,7 +62,11 @@ const contactFaqs = [
         <Card padding="lg">
           <h2 class="text-2xl font-display font-bold text-foreground mb-6">Send us a message</h2>
 
-          <form id="contact-form" action="/api/contact" method="POST" class="space-y-6">
+          <form id="contact-form" action="https://api.web3forms.com/submit" method="POST" class="space-y-6">
+            
+            <input type="hidden" name="access_key" value={accessKey} />
+            <input type="hidden" name="subject" value="New Website Enquiry from B&Co" />
+            
             <Input
               label="Your Name"
               name="name"
@@ -80,7 +87,7 @@ const contactFaqs = [
 
             <Input
               label="Subject"
-              name="subject"
+              name="User Subject"
               type="text"
               placeholder="How can we help?"
               required
@@ -94,9 +101,9 @@ const contactFaqs = [
               required
             />
 
-            <!-- Honeypot field for spam protection -->
-            <div class="hidden" aria-hidden="true">
-              <input type="text" name="honeypot" tabindex="-1" autocomplete="off" />
+            {/* ✅ Removed the botcheck honeypot and added the zero-config hCaptcha div */}
+            <div class="flex justify-center w-full">
+              <div class="h-captcha" data-captcha="true"></div>
             </div>
 
             <div id="form-message" class="hidden text-sm"></div>
@@ -107,8 +114,7 @@ const contactFaqs = [
             </Button>
           </form>
         </Card>
-      <div class="flex flex-col gap-12">
-        {/* FAQ Accordion replacing the Map */}
+      <div class="flex flex-col h-full justify-between gap-12">
           <div>
             <h2 class="font-display text-2xl font-bold text-foreground mb-6">
               Quick answers
@@ -121,14 +127,12 @@ const contactFaqs = [
             />
           </div>
 
-          {/* Contact Info */}
           <div>
             <h2 class="font-display text-2xl font-bold text-foreground mb-6">
               Other ways to reach us
             </h2>
 
             <div class="space-y-4">
-              <!-- Email -->
               <a href={`mailto:${siteConfig.email}`} class="block">
                 <Card hover padding="sm">
                   <div class="flex items-center gap-4">
@@ -142,7 +146,6 @@ const contactFaqs = [
                   </div>
                 </Card>
               </a>
-              <!-- GitHub -->
               <a
                 href="https://github.com/ItsHarryB"
                 target="_blank"
@@ -162,7 +165,6 @@ const contactFaqs = [
                 </Card>
               </a>
 
-              <!-- Twitter -->
               {siteConfig.twitter && (
                 <a
                   href={`https://twitter.com/${siteConfig.twitter.site.replace('@', '')}`}
@@ -192,6 +194,9 @@ const contactFaqs = [
   <Separator orientation="horizontal" className="my-20" />
   <CTA />
   <Toast />
+
+  {/* ✅ Added the required Web3Forms script to load the hCaptcha widget */}
+  <script is:inline src="https://web3forms.com/client/script.js" async defer></script>
 </PageLayout>
 
 <script>
@@ -210,26 +215,42 @@ const contactFaqs = [
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
+      const formData = new FormData(form);
+
+      const hCaptchaResponse = formData.get('h-captcha-response');
+      if (!hCaptchaResponse) {
+        window.dispatchEvent(
+          new CustomEvent('show-toast', {
+            detail: { title: 'Security Check Required', description: 'Please complete the hCaptcha before sending your message.', variant: 'error' },
+          })
+        );
+        return;
+      }
+
       button.disabled = true;
       button.innerHTML = `${spinnerSVG} Sending...`;
-      
-      // ✅ Updated to remove new classes
       button.classList.remove('!bg-green-600', '!bg-red-600', '!text-white', '!opacity-100');
 
       try {
-        const formData = new FormData(form);
-        const response = await fetch('/api/contact', {
+        const response = await fetch(form.action, {
           method: 'POST',
           body: formData,
+          headers: {
+            'Accept': 'application/json'
+          }
         });
 
         const data = await response.json();
 
         if (data.success) {
           button.innerHTML = `${checkSVG} Sent!`;
-          // ✅ Added !opacity-100 so it doesn't look greyed out
           button.classList.add('!bg-green-600', '!text-white', '!opacity-100');
           form.reset();
+          
+          // ✅ TypeScript fix applied here
+          if ((window as any).hcaptcha) {
+            (window as any).hcaptcha.reset();
+          }
 
           window.dispatchEvent(
             new CustomEvent('show-toast', {
@@ -237,9 +258,8 @@ const contactFaqs = [
             })
           );
         } else {
-          const errors = data.errors ? Object.values(data.errors).flat().join(', ') : 'Something went wrong';
+          const errors = data.message || 'Something went wrong';
           button.innerHTML = `${xSVG} Failed`;
-          // ✅ Changed to standard Tailwind red and forced opacity
           button.classList.add('!bg-red-600', '!text-white', '!opacity-100');
 
           window.dispatchEvent(
@@ -250,7 +270,6 @@ const contactFaqs = [
         }
       } catch {
         button.innerHTML = `${xSVG} Failed`;
-        // ✅ Changed to standard Tailwind red and forced opacity
         button.classList.add('!bg-red-600', '!text-white', '!opacity-100');
 
         window.dispatchEvent(
@@ -261,7 +280,6 @@ const contactFaqs = [
       } finally {
         setTimeout(() => {
           button.innerHTML = originalButtonHTML;
-          // ✅ Clean up all the override classes
           button.classList.remove('!bg-green-600', '!bg-red-600', '!text-white', '!opacity-100');
           button.disabled = false;
         }, 3000);

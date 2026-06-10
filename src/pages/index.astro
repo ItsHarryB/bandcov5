@@ -22,10 +22,13 @@ import SiteUpdates from '@/components/landing/SiteUpdates.astro';
   title="Brighton and Co"
   description="Design tokens, accessible components, SEO, and i18n configured from the first commit. Velocity ships what other starters leave as homework."
 >
+  {/* ADDED: class="mt-24 md:mt-28" to push the Hero down below the header */}
   <Hero 
-  layout="split" 
-  size="md" 
-  showBlob blobPosition="right"
+    layout="split" 
+    size="md" 
+    showBlob 
+    blobPosition="right"
+    class="mt-24 md:mt-28" 
   >
     <Badge slot="badge" pill pulse>B&Co v{packageData.version} Public Beta is Live</Badge>
 
@@ -40,7 +43,6 @@ import SiteUpdates from '@/components/landing/SiteUpdates.astro';
     </p>
 
     <Fragment slot="actions">
-      {/* Note: I fixed a missing closing bracket `>` on your Button tag here from your previous snippet */}
       <Button size="lg" href="/about">
         About B&Co
         <Icon name="arrow-right" size="sm" />
@@ -56,7 +58,6 @@ import SiteUpdates from '@/components/landing/SiteUpdates.astro';
       </Button>
     </Fragment>
 
-    {/* Injecting your new component into the Hero's side slot! */}
     <SiteUpdates slot="aside" />
     
   </Hero>
