@@ -1,7 +1,9 @@
 import satori from 'satori';
 import { html } from 'satori-html';
-import { Resvg } from '@resvg/resvg-js';
+import { Resvg, initWasm } from '@resvg/resvg-wasm';
 import siteConfig from '@/config/site.config';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 export interface OGImageOptions {
   title: string;
@@ -10,6 +12,7 @@ export interface OGImageOptions {
 }
 
 let fontCache: ArrayBuffer | null = null;
+let wasmInitialized = false; // ✅ We use this to ensure the engine only boots up once
 
 // Use fetch to grab the font from a CDN. 
 // Cloudflare caches this heavily, bypassing the need for node:fs entirely.
@@ -74,7 +77,19 @@ export async function generateOGImage(options: OGImageOptions): Promise<Uint8Arr
     ],
   });
 
-  // Convert SVG to PNG using resvg-wasm instead of sharp
+  // ✅ THE MISSING BLOCK: Boot up the WebAssembly engine before rendering
+  if (!wasmInitialized) {
+    try {
+      const wasmPath = join(process.cwd(), 'node_modules', '@resvg/resvg-wasm', 'index_bg.wasm');
+      const wasmBuffer = readFileSync(wasmPath);
+      await initWasm(wasmBuffer);
+      wasmInitialized = true;
+    } catch (e) {
+      console.warn("Wasm initialization warning:", e);
+    }
+  }
+
+  // Convert SVG to PNG using resvg-wasm
   const resvg = new Resvg(svg, {
     fitTo: { mode: 'width', value: 1200 },
   });
