@@ -2,8 +2,6 @@ import satori from 'satori';
 import { html } from 'satori-html';
 import { Resvg, initWasm } from '@resvg/resvg-wasm';
 import siteConfig from '@/config/site.config';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
 
 export interface OGImageOptions {
   title: string;
@@ -15,7 +13,6 @@ let fontCache: ArrayBuffer | null = null;
 let wasmInitialized = false;
 
 // Use fetch to grab the font from a CDN. 
-// Cloudflare caches this heavily, bypassing the need for node:fs entirely.
 async function loadFont(): Promise<ArrayBuffer> {
   if (!fontCache) {
     const response = await fetch(
@@ -26,11 +23,9 @@ async function loadFont(): Promise<ArrayBuffer> {
   return fontCache;
 }
 
-// Note: We return Uint8Array here, which is standard for Edge APIs and works perfectly in Astro Responses
 export async function generateOGImage(options: OGImageOptions): Promise<Uint8Array> {
   const { title, description, type = 'website' } = options;
 
-  // loadFont is now async, so we await it
   const fontData = await loadFont();
 
   const truncatedDescription = description
@@ -76,11 +71,11 @@ export async function generateOGImage(options: OGImageOptions): Promise<Uint8Arr
     ],
   });
 
-  // ✅ Read the file directly from the hard drive (100% allowed now)
+  // ✅ THE SILVER BULLET: Fetch the WebAssembly file directly from a CDN, bypassing the hard drive entirely
   if (!wasmInitialized) {
     try {
-      const wasmPath = join(process.cwd(), 'node_modules', '@resvg/resvg-wasm', 'index_bg.wasm');
-      const wasmBuffer = readFileSync(wasmPath);
+      const wasmResponse = await fetch('https://unpkg.com/@resvg/resvg-wasm@2.6.2/index_bg.wasm');
+      const wasmBuffer = await wasmResponse.arrayBuffer();
       await initWasm(wasmBuffer);
       wasmInitialized = true;
     } catch (e) {
