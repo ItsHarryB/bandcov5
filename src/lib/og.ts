@@ -2,8 +2,10 @@ import satori from 'satori';
 import { html } from 'satori-html';
 import { Resvg, initWasm } from '@resvg/resvg-wasm';
 import siteConfig from '@/config/site.config';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+
+// ✅ Import the WebAssembly file directly as a module.
+// This bypasses the need for the file system entirely and is natively supported by Cloudflare.
+import resvgWasmModule from '@resvg/resvg-wasm/index_bg.wasm?module';
 
 export interface OGImageOptions {
   title: string;
@@ -12,7 +14,7 @@ export interface OGImageOptions {
 }
 
 let fontCache: ArrayBuffer | null = null;
-let wasmInitialized = false; // ✅ We use this to ensure the engine only boots up once
+let wasmInitialized = false;
 
 // Use fetch to grab the font from a CDN. 
 // Cloudflare caches this heavily, bypassing the need for node:fs entirely.
@@ -39,7 +41,6 @@ export async function generateOGImage(options: OGImageOptions): Promise<Uint8Arr
       : description
     : '';
 
-  // Your original markup remains exactly the same
   const markup = html`
     <div style="height: 100%; width: 100%; display: flex; flex-direction: column; background: linear-gradient(135deg, #18181b 0%, #27272a 50%, #18181b 100%); padding: 60px 80px; font-family: 'Inter'; position: relative;">
       <div style="display: flex; position: absolute; top: 0; left: 0; width: 8px; height: 100%; background: linear-gradient(180deg, #f97316 0%, #fb923c 50%, #f97316 100%);"></div>
@@ -77,12 +78,10 @@ export async function generateOGImage(options: OGImageOptions): Promise<Uint8Arr
     ],
   });
 
-  // ✅ THE MISSING BLOCK: Boot up the WebAssembly engine before rendering
+  // ✅ Boot the WebAssembly engine using the imported module
   if (!wasmInitialized) {
     try {
-      const wasmPath = join(process.cwd(), 'node_modules', '@resvg/resvg-wasm', 'index_bg.wasm');
-      const wasmBuffer = readFileSync(wasmPath);
-      await initWasm(wasmBuffer);
+      await initWasm(resvgWasmModule);
       wasmInitialized = true;
     } catch (e) {
       console.warn("Wasm initialization warning:", e);
