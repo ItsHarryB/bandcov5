@@ -53,8 +53,7 @@ public/pagefind/
 .claude/
 
 
-# npm lockfile (pnpm only)
-package-lock.json
+
 
 # Internal docs
 southwell-astro-boilerplate-docs.md
