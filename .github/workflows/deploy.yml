@@ -3,7 +3,7 @@ name: Deploy to Cloudflare Pages
 on:
   push:
     branches:
-      - main # Change this if your primary branch is named 'master'
+      - master # Change this if your primary branch is named 'master'
 
 jobs:
   build-and-deploy:
