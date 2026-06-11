@@ -3,7 +3,6 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
-import cloudflare from '@astrojs/cloudflare';
 
 export default defineConfig({
   site: process.env.SITE_URL || 'https://example.com',
@@ -31,6 +30,9 @@ export default defineConfig({
 
   vite: {
     plugins: [tailwindcss()],
+    ssr: {
+      external: ['@resvg/resvg-js']
+    }
   },
 
   security: {
@@ -44,6 +46,5 @@ export default defineConfig({
     },
   },
   
-  output: 'static',
-  adapter: cloudflare()
+  output: 'static'
 });
