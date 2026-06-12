@@ -1,5 +1,7 @@
 import * as React from "react"
 import { X } from "lucide-react" 
+// 1. ADDED: Import the WheelGesturesPlugin
+import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures" 
 import {
   Carousel,
   CarouselContent,
@@ -54,6 +56,8 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
       <Carousel 
         setApi={setMainApi}
         opts={{ align: "start", loop: true }}
+        // 2. ADDED: The plugins array to enable swipe/trackpad scrolling
+        plugins={[WheelGesturesPlugin()]}
         className="w-full group"
       >
         <CarouselContent>
@@ -92,6 +96,8 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
         <Carousel 
           setApi={setDialogApi}
           opts={{ align: "center", loop: true, startIndex: selectedIndex }}
+          // 3. ADDED: The plugins array to enable swipe/trackpad scrolling in the lightbox
+          plugins={[WheelGesturesPlugin()]}
           className="w-full h-full flex items-center justify-center"
         >
           <CarouselContent className="h-full ml-0">
@@ -105,7 +111,6 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
                   </DialogClose>
 
                   {/* IMAGE & BUTTON WRAPPER */}
-                  {/* FIX 1: We wrap the image and buttons together in a group/lightbox container */}
                   <div className="relative z-10 group/lightbox pointer-events-auto">
                     
                     {/* The Image */}
@@ -115,14 +120,11 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
                       className="max-h-[90vh] max-w-[95vw] md:max-w-[90vw] object-contain rounded-lg shadow-2xl drop-shadow-2xl cursor-grab active:cursor-grabbing"
                     />
 
-                    {/* FIX 2: The 'X' Button is now anchored inside the image corner! */}
-                    {/* Opacity is 100 on mobile, but fades in on hover on desktop */}
                     <DialogClose className="absolute top-3 right-3 md:top-4 md:right-4 z-50 p-2 rounded-full bg-background/60 hover:bg-background backdrop-blur-md transition-all text-foreground outline-none opacity-100 md:opacity-0 md:group-hover/lightbox:opacity-100">
                       <X className="w-5 h-5 md:w-6 md:h-6" />
                       <span className="sr-only">Close</span>
                     </DialogClose>
 
-                    {/* FIX 3: Nav buttons moved inside the wrapper so they perfectly hug the image edges */}
                     <CarouselPrevious className="left-3 md:left-4 bg-background/60 hover:bg-background border-none shadow-md backdrop-blur-md z-50 opacity-100 md:opacity-0 md:transition-opacity md:group-hover/lightbox:opacity-100" />
                     <CarouselNext className="right-3 md:right-4 bg-background/60 hover:bg-background border-none shadow-md backdrop-blur-md z-50 opacity-100 md:opacity-0 md:transition-opacity md:group-hover/lightbox:opacity-100" />
                   </div>

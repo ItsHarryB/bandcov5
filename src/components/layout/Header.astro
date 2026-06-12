@@ -392,6 +392,9 @@ const buttonId = `${menuId}-button`;
         isAnimating = true;
         isOpen = true;
 
+        // ✅ ADDED: Lock the body scroll immediately
+        document.body.style.overflow = 'hidden';
+
         button!.setAttribute('aria-expanded', 'true');
         menuIcon!.classList.add('hidden');
         closeIcon!.classList.remove('hidden');
@@ -425,6 +428,9 @@ const buttonId = `${menuId}-button`;
       function close() {
         if (!isOpen || isAnimating) return;
         isAnimating = true;
+
+        // ✅ ADDED: Unlock the body scroll immediately so the page feels responsive
+        document.body.style.overflow = '';
 
         button!.setAttribute('aria-expanded', 'false');
         menuIcon!.classList.remove('hidden');
