@@ -5,182 +5,53 @@ import CTA from '@/components/landing/CTA.astro';
 import shopLogo from '@/assets/branding/shoplogo.png';
 import { ShopCarousel } from '@/components/ui/content/ShopCarousel';
 import { SiVinted, SiEbay } from "react-icons/si";
-
 import Badge from '@/components/ui/data-display/Badge/Badge.astro';
+
+import { getCollection } from 'astro:content';
 import { getImage } from 'astro:assets';
-import type { ImageMetadata } from 'astro';
+// ADDED: Import your new interactive link component
+import { ExternalLink } from '@/components/ui/content/ExternalLink';
 
-import edHardy1 from '@/assets/shop/vinted/edhardy1.jpg';
-import edHardy2 from '@/assets/shop/vinted/edhardy2.jpg';
-import edHardy3 from '@/assets/shop/vinted/edhardy3.jpg';
+// Fetch all entries from both database collections
+const rawVintedItems = await getCollection('vinted');
+const rawEbayItems = await getCollection('ebay');
 
-import fleece1 from '@/assets/shop/vinted/fleece1.jpg';
-import fleece2 from '@/assets/shop/vinted/fleece2.jpg';
-import fleece3 from '@/assets/shop/vinted/fleece3.jpg'; 
+// Filter for items that are currently active and optimize images through Astro
+const vintedItems = await Promise.all(
+  rawVintedItems
+    .filter(item => item.data.status === 'For Sale')
+    .map(async (item) => {
+      const optimizedImages = await Promise.all(
+        item.data.images.map(async (img) => {
+          const optimized = await getImage({ src: img, format: 'webp', width: 1080, quality: 85 });
+          return optimized.src;
+        })
+      );
+      return {
+        ...item.data,
+        id: item.id,
+        images: optimizedImages
+      };
+    })
+);
 
-import fob1 from '@/assets/shop/vinted/fob1.jpg';
-import fob2 from '@/assets/shop/vinted/fob2.jpg';
-import fob3 from '@/assets/shop/vinted/fob3.jpg';
-
-import waxjacket1 from '@/assets/shop/vinted/waxjacket1.jpg';
-import waxjacket2 from '@/assets/shop/vinted/waxjacket2.jpg';
-import waxjacket3 from '@/assets/shop/vinted/waxjacket3.jpg';
-
-import ffujacket1 from '@/assets/shop/vinted/ffujacket1.jpg';
-import ffujacket2 from '@/assets/shop/vinted/ffujacket2.jpg';
-import ffujacket3 from '@/assets/shop/vinted/ffujacket3.jpg';
-
-import ffborgjacket1 from '@/assets/shop/vinted/ffborgjacket1.jpg';
-import ffborgjacket2 from '@/assets/shop/vinted/ffborgjacket2.jpg';
-import ffborgjacket3 from '@/assets/shop/vinted/ffborgjacket3.jpg';
-
-import corsair1 from '@/assets/shop/ebay/corsair1.jpg';
-import corsair2 from '@/assets/shop/ebay/corsair2.jpg';
-import corsair3 from '@/assets/shop/ebay/corsair3.jpg';
-
-import swstormtrooper1 from '@/assets/shop/ebay/swstormtrooper1.jpg';
-import swstormtrooper2 from '@/assets/shop/ebay/swstormtrooper2.jpg';
-import swstormtrooper3 from '@/assets/shop/ebay/swstormtrooper3.jpg';
-
-import swdeathtrooper1 from '@/assets/shop/ebay/swdeathtrooper1.jpg';
-import swdeathtrooper2 from '@/assets/shop/ebay/swdeathtrooper2.jpg';
-import swdeathtrooper3 from '@/assets/shop/ebay/swdeathtrooper3.jpg';
-
-
-
-const optimizeImage = async (src: ImageMetadata | string) => {
-  const optimized = await getImage({ src, format: 'webp', width: 1080, quality: 85 });  
-  return optimized.src;
-};
-
-const vintedItems = [
-  {
-    id: "v1",
-    title: "Ed Hardy Mount Fuji Shirt",
-    price: "£70.00",
-    condition: "Very Good",
-    size: "Medium",
-    description: "Excellent condition, genuine Ed Hardy. Intricate embroidery on the back.",
-    images: [
-      await optimizeImage(edHardy1), 
-      await optimizeImage(edHardy2),
-      await optimizeImage(edHardy3)
-    ],
-    url: "https://www.vinted.co.uk/items/8574016502",
-  },
-  {
-    id: "v2",
-    title: "M&S Black Fleece",
-    price: "£15.00",
-    condition: "Very Good",
-    size: "Medium",
-    description: "A warm, Marks and Spencer lightweight fleece - perfect for chilly days.",
-    images: [
-      await optimizeImage(fleece1), 
-      await optimizeImage(fleece2),
-      await optimizeImage(fleece3)
-    ],
-    url: "https://www.vinted.co.uk/items/8572115359",
-  },
-  {
-    id: "v3",
-    title: "Fall Out Boy T-Shirt So Much (for) Stardust",
-    price: "£10.00",
-    condition: "Very Good",
-    size: "Large",
-    description: "Limited edition Fall Out Boy merchandise - with a back print with 'Track 2'.",
-    images: [
-      await optimizeImage(fob1),
-      await optimizeImage(fob2),
-      await optimizeImage(fob3)
-    ],
-    url: "https://www.vinted.co.uk/items/8571869696-fall-out-boy-so-much-for-stardust-band-t-shirt-black",
-  },
-  {
-    id: "v4",
-    title: "M&S Black Waxed Jacket",
-    price: "£70.00",
-    condition: "Very Good",
-    size: "Medium",
-    description: "A Marks and Spencer Black waxed jacket in excellent condition, perfect for layering.",
-    images: [
-      await optimizeImage(waxjacket1),
-      await optimizeImage(waxjacket2),
-      await optimizeImage(waxjacket3)
-    ],
-    url: "https://www.vinted.co.uk/items/7913126026",
-  },
-  {
-    id: "v5",
-    title: "Fat Face Utility Jacket",
-    price: "£40.00",
-    condition: "New Without Tags",
-    size: "Large",
-    description: "A Fat Face utility jacket in excellent condition, excellent for cooler weather.",
-    images: [
-      await optimizeImage(ffujacket1),
-      await optimizeImage(ffujacket2),
-      await optimizeImage(ffujacket3)
-    ],
-    url: "https://www.vinted.co.uk/items/7913126026",
-  },
-  {
-    id: "v6",
-    title: "Fat Face Borg-Lined Jacket",
-    price: "£40.00",
-    condition: "Very Good",
-    size: "Large",
-    description: "A Fat Face Borg-Lined jacket in excellent condition, excellent for cooler weather.",
-    images: [
-      await optimizeImage(ffborgjacket1),
-      await optimizeImage(ffborgjacket2),
-      await optimizeImage(ffborgjacket3)
-    ],
-    url: "https://www.vinted.co.uk/items/7913126026",
-  },
-];
-
-const ebayItems = [
-  {
-    id: "e1",
-    title: "Corsair iCUE COMMANDER CORE XT",
-    price: "£40.00",
-    condition: "Opened - Never Used",
-    description: "Opened - never used. Smart RGB lighting and fan speed controller.",
-    images: [
-      await optimizeImage(corsair1),
-      await optimizeImage(corsair2),
-      await optimizeImage(corsair3)
-    ],
-    url: "https://www.ebay.co.uk/itm/287272079473?itmmeta=01KTKTTZGN18FTF4GE80BB3TD7&hash=item42e2c01071:g:0a8AAeSwGYJp3kVK",
-  },
-  {
-    id: "e2",
-    title: "Disney World Star Wars Stormtrooper Executioner Pin - Collectible",
-    price: "£20.00",
-    condition: "New - Unopened",
-    description: "Never opened, never used. Star Wars Stormtrooper Executioner pin from Disney World Orlando.",
-    images: [
-      await optimizeImage(swstormtrooper1),
-      await optimizeImage(swstormtrooper2),
-      await optimizeImage(swstormtrooper3)
-    ],
-    url: "https://www.ebay.co.uk/itm/287327409246",
-  },
-  {
-    id: "e3",
-    title: "Disney World Star Wars Death Trooper Pin - Collectible",
-    price: "£20.00",
-    condition: "New - Unopened",
-    description: "Never opened, never used. Star Wars Death Trooper pin from Disney World Orlando.",
-    images: [
-      await optimizeImage(swdeathtrooper1),
-      await optimizeImage(swdeathtrooper2),
-      await optimizeImage(swdeathtrooper3)
-    ],
-    url: "https://www.ebay.co.uk/itm/287327426475",
-  },
-];
+const ebayItems = await Promise.all(
+  rawEbayItems
+    .filter(item => item.data.status === 'For Sale')
+    .map(async (item) => {
+      const optimizedImages = await Promise.all(
+        item.data.images.map(async (img) => {
+          const optimized = await getImage({ src: img, format: 'webp', width: 1080, quality: 85 });
+          return optimized.src;
+        })
+      );
+      return {
+        ...item.data,
+        id: item.id,
+        images: optimizedImages
+      };
+    })
+);
 ---
 
 <PageLayout
@@ -215,23 +86,31 @@ const ebayItems = [
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 px-4 md:px-0">
         <div>
           <h2 class="text-3xl font-bold text-foreground flex items-center gap-3">
-            {/* CHANGED: Replaced the Fire emoji with a clickable Vinted icon */}
-            <a 
+            {/* UPDATED: Replaced <a> with ExternalLink, hid the icon, kept the dialog */}
+            <ExternalLink 
               href="https://vinted.co.uk/member/272494517" 
-              target="_blank" 
-              class="hover:opacity-80 transition-opacity flex items-center mt-1"
+              client:load
+              showIndicator={false}
+              className="hover:opacity-80 transition-opacity flex items-center mt-1"
             >
               <SiVinted className="w-8 h-8" style={{ color: "#017573" }} />
-            </a>
+            </ExternalLink>
             Vinted Highlights
           </h2>
           <p class="mt-2 text-foreground-muted">
             A selection of items from the SHOP: B&Co Vinted -
           </p>
         </div>
-        <a href="https://vinted.co.uk/member/272494517" target="_blank" class="text-sm font-medium hover:underline" style="color: #ff0055;">
+        {/* UPDATED: Replaced <a> with ExternalLink */}
+        <ExternalLink 
+          href="https://vinted.co.uk/member/272494517" 
+          client:load
+          showIndicator={false}
+          className="text-sm font-medium hover:underline" 
+          style={{ color: "#ff0055" }}
+        >
           View full Vinted profile &rarr;
-        </a>
+        </ExternalLink>
       </div>
 
       <ShopCarousel products={vintedItems} storeName="Vinted" client:only="react" />
@@ -245,23 +124,31 @@ const ebayItems = [
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 px-4 md:px-0">
         <div>
           <h2 class="text-3xl font-bold text-foreground flex items-center gap-3">
-            {/* CHANGED: Replaced the Box emoji with a clickable eBay icon */}
-            <a 
+             {/* UPDATED: Replaced <a> with ExternalLink */}
+            <ExternalLink 
               href="https://ebay.co.uk/usr/itsharryb/" 
-              target="_blank" 
-              class="hover:opacity-80 transition-opacity flex items-center mt-1"
+              client:load
+              showIndicator={false}
+              className="hover:opacity-80 transition-opacity flex items-center mt-1"
             >
               <SiEbay className="w-10 h-10" style={{ color: "#0064D2" }} />
-            </a>
+            </ExternalLink>
             eBay Highlights
           </h2>
           <p class="mt-2 text-foreground-muted">
             A selection of items from the SHOP: B&Co eBay -
           </p>
         </div>
-        <a href="https://ebay.co.uk/usr/itsharryb/" target="_blank" class="text-sm font-medium hover:underline" style="color: #ff0055;">
+        {/* UPDATED: Replaced <a> with ExternalLink */}
+        <ExternalLink 
+          href="https://ebay.co.uk/usr/itsharryb/" 
+          client:load
+          showIndicator={false}
+          className="text-sm font-medium hover:underline" 
+          style={{ color: "#ff0055" }}
+        >
           View full eBay profile &rarr;
-        </a>
+        </ExternalLink>
       </div>
 
       <ShopCarousel products={ebayItems} storeName="eBay" client:only="react" />

@@ -14,13 +14,14 @@ import { ScrollArea } from "@/components/ui/overlay/ScrollArea/scroll-area";
 import Separator from '@/components/ui/layout/Separator';
 import { HomeTabs } from '@/components/landing/HomeTabs';
 import SiteUpdates from '@/components/landing/SiteUpdates.astro';
+import { ExternalLink } from '@/components/ui/content/ExternalLink';
 // 1. Create a structured array for your updates
 
 ---
 
 <LandingLayout
   title="Brighton and Co"
-  description="Design tokens, accessible components, SEO, and i18n configured from the first commit. Velocity ships what other starters leave as homework."
+  description="The Brighton and Co Website, the homepage, showcasing the interests of Harry Brighton."
 >
   {/* ADDED: class="mt-24 md:mt-28" to push the Hero down below the header */}
   <Hero 
@@ -47,15 +48,23 @@ import SiteUpdates from '@/components/landing/SiteUpdates.astro';
         About B&Co
         <Icon name="arrow-right" size="sm" />
       </Button>
-      <Button
-        size="lg"
-        variant="outline"
-        href="https://test.brightonandco.co.uk/"
-        target="_blank"
+      
+      {/* WRAPPED TEST SITE BUTTON */}
+      <ExternalLink 
+        client:load 
+        href="https://test.brightonandco.co.uk/" 
+        showIndicator={false} 
+        className="inline-block"
       >
-        <Icon name="flask-conical" size="sm" />
-        View Test Site
-      </Button>
+        <Button
+          size="lg"
+          variant="outline"
+          class="pointer-events-none" 
+        >
+          <Icon name="flask-conical" size="sm" />
+          View Test Site
+        </Button>
+      </ExternalLink>
     </Fragment>
 
     <SiteUpdates slot="aside" />

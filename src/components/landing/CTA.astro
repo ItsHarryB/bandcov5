@@ -3,6 +3,7 @@ import CTASection from '@/components/ui/marketing/CTA/CTA.astro';
 import Button from '@/components/ui/form/Button/Button.astro';
 import Icon from '@/components/ui/primitives/Icon/Icon.astro';
 import Logo from '@/components/ui/marketing/Logo/Logo.astro';
+import { ExternalLink } from '@/components/ui/content/ExternalLink';
 ---
 
 <CTASection id="cta" variant="default" size="md" maxWidth="lg">
@@ -17,13 +18,27 @@ import Logo from '@/components/ui/marketing/Logo/Logo.astro';
   </p>
 
   <Fragment slot="actions">
-    <Button variant="outline" size="lg" href="https://astro.build/themes/details/velocity/" target="_blank">
-      <Icon name="book" size="md" />
-      Velocity
-    </Button>
-    <Button variant="outline" size="lg" href="https://web.brightonandco.co.uk/" target="_blank">
-      <Icon name="globe" size="md" />
-      Visit OLD: Brighton and Co
-    </Button>
+    <ExternalLink
+      client:load
+      href="https://astro.build/themes/details/velocity/"
+      showIndicator={false}
+      className="inline-block"
+    >
+      <Button variant="outline" size="lg" class="pointer-events-none">
+        <Icon name="book" size="md" />
+        Velocity
+      </Button>
+    </ExternalLink>
+    <ExternalLink
+      client:load
+      href="https://web.brightonandco.co.uk/"
+      showIndicator={false}
+      className="inline-block"
+    >
+      <Button variant="outline" size="lg" class="pointer-events-none">
+        <Icon name="globe" size="md" />
+        Visit OLD: Brighton and Co
+      </Button>
+    </ExternalLink>
   </Fragment>
 </CTASection>

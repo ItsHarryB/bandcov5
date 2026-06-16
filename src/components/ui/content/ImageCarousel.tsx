@@ -1,6 +1,5 @@
 import * as React from "react"
 import { X } from "lucide-react" 
-// 1. ADDED: Import the WheelGesturesPlugin
 import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures" 
 import {
   Carousel,
@@ -17,6 +16,8 @@ import {
   DialogTitle,
   DialogClose,
 } from "@/components/ui/shadcn/dialog"
+// Import the Skeleton component
+import { Skeleton } from "@/components/ui/shadcn/skeleton"
 
 export interface CarouselImage {
   src: string;
@@ -31,6 +32,9 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
   const [mainApi, setMainApi] = React.useState<CarouselApi>()
   const [dialogApi, setDialogApi] = React.useState<CarouselApi>()
   const [selectedIndex, setSelectedIndex] = React.useState(0)
+  
+  // State to track loaded images for both main carousel and lightbox
+  const [loadedImages, setLoadedImages] = React.useState<Record<string, boolean>>({})
 
   if (!images || images.length === 0) return null;
 
@@ -40,6 +44,11 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
       dialogApi.scrollTo(index, true);
     }
   }
+
+  // Function to flag an image as fully loaded
+  const handleImageLoad = (key: string) => {
+    setLoadedImages((prev) => ({ ...prev, [key]: true }));
+  };
 
   React.useEffect(() => {
     if (!dialogApi || !mainApi) return
@@ -56,7 +65,6 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
       <Carousel 
         setApi={setMainApi}
         opts={{ align: "start", loop: true }}
-        // 2. ADDED: The plugins array to enable swipe/trackpad scrolling
         plugins={[WheelGesturesPlugin()]}
         className="w-full group"
       >
@@ -69,10 +77,17 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
                     onClick={() => handleImageClick(index)}
                     className="overflow-hidden rounded-2xl border border-border bg-surface-primary shadow-sm aspect-video relative flex items-center justify-center cursor-pointer"
                   >
+                    {/* The Skeleton sits at the absolute bottom of the stack */}
+                    <Skeleton className="absolute inset-0 w-full h-full rounded-none" />
+                    
                     <img 
                       src={image.src} 
                       alt={image.alt} 
-                      className="object-cover w-full h-full"
+                      onLoad={() => handleImageLoad(`main-${index}`)}
+                      className="absolute inset-0 object-cover w-full h-full transition-opacity duration-300"
+                      style={{ opacity: loadedImages[`main-${index}`] ? 1 : 0 }}
+                      loading={index === 0 ? "eager" : "lazy"} 
+                      decoding="async"
                     />
                   </div>
                 </DialogTrigger>
@@ -96,7 +111,6 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
         <Carousel 
           setApi={setDialogApi}
           opts={{ align: "center", loop: true, startIndex: selectedIndex }}
-          // 3. ADDED: The plugins array to enable swipe/trackpad scrolling in the lightbox
           plugins={[WheelGesturesPlugin()]}
           className="w-full h-full flex items-center justify-center"
         >
@@ -113,11 +127,17 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
                   {/* IMAGE & BUTTON WRAPPER */}
                   <div className="relative z-10 group/lightbox pointer-events-auto">
                     
-                    {/* The Image */}
+                    <Skeleton className="absolute inset-0 w-full h-full rounded-lg" />
+
+                    {/* The Lightbox Image */}
                     <img 
                       src={image.src} 
                       alt={image.alt} 
-                      className="max-h-[90vh] max-w-[95vw] md:max-w-[90vw] object-contain rounded-lg shadow-2xl drop-shadow-2xl cursor-grab active:cursor-grabbing"
+                      onLoad={() => handleImageLoad(`lightbox-${index}`)}
+                      className="relative max-h-[90vh] max-w-[95vw] md:max-w-[90vw] object-contain rounded-lg shadow-2xl drop-shadow-2xl cursor-grab active:cursor-grabbing transition-opacity duration-300"
+                      style={{ opacity: loadedImages[`lightbox-${index}`] ? 1 : 0 }}
+                      loading="lazy"
+                      decoding="async"
                     />
 
                     <DialogClose className="absolute top-3 right-3 md:top-4 md:right-4 z-50 p-2 rounded-full bg-background/60 hover:bg-background backdrop-blur-md transition-all text-foreground outline-none opacity-100 md:opacity-0 md:group-hover/lightbox:opacity-100">

@@ -16,6 +16,7 @@ import CTA from '@/components/landing/CTA.astro';
 import Toast from '@/components/ui/feedback/Toast/Toast.astro';
 import { Separator } from '@/components/ui';
 import Accordion from '@/components/ui/overlay/Accordion/Accordion.astro';
+import { ExternalLink } from '@/components/ui/content/ExternalLink';
 
 const contactFaqs = [
   {
@@ -132,8 +133,10 @@ const accessKey = "598318ee-9b49-4c95-9cc2-6b6882707fcf";
               Other ways to reach us
             </h2>
 
-            <div class="space-y-4">
-              <a href={`mailto:${siteConfig.email}`} class="block">
+            <div class="flex flex-col gap-4 w-full">
+              
+              {/* EMAIL LINK (Standard internal app trigger) */}
+              <a href={`mailto:${siteConfig.email}`} class="block w-full">
                 <Card hover padding="sm">
                   <div class="flex items-center gap-4">
                     <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-brand-500/20 to-brand-500/5 flex items-center justify-center text-brand-500 shrink-0">
@@ -146,11 +149,13 @@ const accessKey = "598318ee-9b49-4c95-9cc2-6b6882707fcf";
                   </div>
                 </Card>
               </a>
-              <a
+
+              {/* GITHUB LINK */}
+              <ExternalLink
+                client:load
                 href="https://github.com/ItsHarryB"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="block"
+                showIndicator={false}
+                className="block w-full" 
               >
                 <Card hover padding="sm">
                   <div class="flex items-center gap-4">
@@ -163,14 +168,15 @@ const accessKey = "598318ee-9b49-4c95-9cc2-6b6882707fcf";
                     </div>
                   </div>
                 </Card>
-              </a>
+              </ExternalLink>
 
+              {/* TWITTER LINK */}
               {siteConfig.twitter && (
-                <a
+                <ExternalLink
+                  client:load
                   href={`https://twitter.com/${siteConfig.twitter.site.replace('@', '')}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="block"
+                  showIndicator={false}
+                  className="block w-full"
                 >
                   <Card hover padding="sm">
                     <div class="flex items-center gap-4">
@@ -183,8 +189,9 @@ const accessKey = "598318ee-9b49-4c95-9cc2-6b6882707fcf";
                       </div>
                     </div>
                   </Card>
-                </a>
+                </ExternalLink>
               )}
+              
             </div>
           </div>
         </div>

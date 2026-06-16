@@ -24,6 +24,7 @@ import Logo from '@/components/ui/marketing/Logo/Logo.astro';
 import Icon from '@/components/ui/primitives/Icon/Icon.astro';
 import siteConfig from '@/config/site.config';
 import { Home } from 'lucide-react';
+import { ExternalLink } from '@/components/ui/content/ExternalLink';
 
 export interface NavItem {
   label: string;
@@ -163,16 +164,27 @@ function getSocialIcon(platform: string): string {
 
         {/* Navigation Links */}
         <nav class="flex flex-wrap justify-center gap-[var(--space-inline-lg)] md:gap-[var(--space-stack-lg)] text-sm font-medium text-foreground-muted">
-          {allNavItems.map((item) => (
-            <a
-              href={item.href}
-              class="transition-colors hover:text-foreground"
-              target={item.external || item.href.startsWith('http') ? '_blank' : undefined}
-              rel={item.external || item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-            >
-              {item.label}
-            </a>
-          ))}
+          {allNavItems.map((item) => {
+            const isExternal = item.external || item.href.startsWith('http');
+            return isExternal ? (
+              <ExternalLink
+                client:load
+                href={item.href}
+                className="transition-colors hover:text-foreground"
+                showIndicator={true}
+                requireConfirm={true}
+              >
+                {item.label}
+              </ExternalLink>
+            ) : (
+              <a
+                href={item.href}
+                class="transition-colors hover:text-foreground"
+              >
+                {item.label}
+              </a>
+            );
+          })}
         </nav>
 
         {/* Social Links */}
@@ -182,15 +194,16 @@ function getSocialIcon(platform: string): string {
           ) : (
             <div class="flex items-center gap-[var(--space-stack-md)]">
               {socialLinks.map((social) => (
-                <a
+                <ExternalLink
+                  client:load
                   href={social.href}
-                  class="transition-colors text-foreground-muted hover:text-foreground"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  className="transition-colors text-foreground-muted hover:text-foreground"
+                  showIndicator={false}
+                  requireConfirm={true}
                   aria-label={social.label || `Follow us on ${social.platform}`}
                 >
                   <Icon name={getSocialIcon(social.platform)} size="md" />
-                </a>
+                </ExternalLink>
               ))}
             </div>
           )
@@ -223,15 +236,16 @@ function getSocialIcon(platform: string): string {
               {showSocial && socialLinks.length > 0 && (
                 <div class="flex items-center gap-[var(--space-stack-md)] pt-2">
                   {socialLinks.map((social) => (
-                    <a
+                    <ExternalLink
+                      client:load
                       href={social.href}
-                      class="transition-colors text-foreground-muted hover:text-foreground"
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      className="transition-colors text-foreground-muted hover:text-foreground"
+                      showIndicator={false}
+                      requireConfirm={true}
                       aria-label={social.label || `Follow us on ${social.platform}`}
                     >
                       <Icon name={getSocialIcon(social.platform)} size="md" />
-                    </a>
+                    </ExternalLink>
                   ))}
                 </div>
               )}
@@ -248,18 +262,31 @@ function getSocialIcon(platform: string): string {
                   {group.title}
                 </h3>
                 <ul class="space-y-2">
-                  {group.links.map((link) => (
-                    <li>
-                      <a
-                        href={link.href}
-                        class="text-sm transition-colors text-foreground-muted hover:text-foreground"
-                        target={link.external || link.href.startsWith('http') ? '_blank' : undefined}
-                        rel={link.external || link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                      >
-                        {link.label}
-                      </a>
-                    </li>
-                  ))}
+                  {group.links.map((link) => {
+                    const isExternal = link.external || link.href.startsWith('http');
+                    return (
+                      <li>
+                        {isExternal ? (
+                          <ExternalLink
+                            client:load
+                            href={link.href}
+                            className="text-sm transition-colors text-foreground-muted hover:text-foreground"
+                            showIndicator={true}
+                            requireConfirm={true}
+                          >
+                            {link.label}
+                          </ExternalLink>
+                        ) : (
+                          <a
+                            href={link.href}
+                            class="text-sm transition-colors text-foreground-muted hover:text-foreground"
+                          >
+                            {link.label}
+                          </a>
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             ))
@@ -280,14 +307,27 @@ function getSocialIcon(platform: string): string {
                 )}
                 {legalLinks.length > 0 && (
                   <div class="flex items-center gap-[var(--space-inline-lg)]">
-                    {legalLinks.map((link) => (
-                      <a
-                        href={link.href}
-                        class="text-sm transition-colors text-foreground-muted hover:text-foreground"
-                      >
-                        {link.label}
-                      </a>
-                    ))}
+                    {legalLinks.map((link) => {
+                      const isExternal = link.href.startsWith('http');
+                      return isExternal ? (
+                        <ExternalLink
+                          client:load
+                          href={link.href}
+                          className="text-sm transition-colors text-foreground-muted hover:text-foreground"
+                          showIndicator={true}
+                          requireConfirm={true}
+                        >
+                          {link.label}
+                        </ExternalLink>
+                      ) : (
+                        <a
+                          href={link.href}
+                          class="text-sm transition-colors text-foreground-muted hover:text-foreground"
+                        >
+                          {link.label}
+                        </a>
+                      );
+                    })}
                   </div>
                 )}
               </>
@@ -332,31 +372,43 @@ function getSocialIcon(platform: string): string {
 
         {/* Navigation Links */}
         <nav class="flex flex-wrap justify-center gap-[var(--space-inline-lg)] text-sm font-medium text-foreground-muted">
-          {allNavItems.map((item) => (
-            <a
-              href={item.href}
-              class="transition-colors hover:text-foreground"
-              target={item.external || item.href.startsWith('http') ? '_blank' : undefined}
-              rel={item.external || item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-            >
-              {item.label}
-            </a>
-          ))}
+          {allNavItems.map((item) => {
+            const isExternal = item.external || item.href.startsWith('http');
+            return isExternal ? (
+              <ExternalLink
+                client:load
+                href={item.href}
+                className="transition-colors hover:text-foreground"
+                showIndicator={true}
+                requireConfirm={true}
+              >
+                {item.label}
+              </ExternalLink>
+            ) : (
+              <a
+                href={item.href}
+                class="transition-colors hover:text-foreground"
+              >
+                {item.label}
+              </a>
+            );
+          })}
         </nav>
 
         {/* Social Links */}
         {showSocial && socialLinks.length > 0 && (
           <div class="flex items-center gap-[var(--space-stack-md)]">
             {socialLinks.map((social) => (
-              <a
+              <ExternalLink
+                client:load
                 href={social.href}
-                class="transition-colors text-foreground-muted hover:text-foreground"
-                target="_blank"
-                rel="noopener noreferrer"
+                className="transition-colors text-foreground-muted hover:text-foreground"
+                showIndicator={false}
+                requireConfirm={true}
                 aria-label={social.label || `Follow us on ${social.platform}`}
               >
                 <Icon name={getSocialIcon(social.platform)} size="md" />
-              </a>
+              </ExternalLink>
             ))}
           </div>
         )}
@@ -371,14 +423,27 @@ function getSocialIcon(platform: string): string {
             )}
             {legalLinks.length > 0 && (
               <div class="flex items-center gap-[var(--space-inline-lg)]">
-                {legalLinks.map((link) => (
-                  <a
-                    href={link.href}
-                    class="text-sm transition-colors text-foreground-muted hover:text-foreground"
-                  >
-                    {link.label}
-                  </a>
-                ))}
+                {legalLinks.map((link) => {
+                  const isExternal = link.href.startsWith('http');
+                  return isExternal ? (
+                    <ExternalLink
+                      client:load
+                      href={link.href}
+                      className="text-sm transition-colors text-foreground-muted hover:text-foreground"
+                      showIndicator={true}
+                      requireConfirm={true}
+                    >
+                      {link.label}
+                    </ExternalLink>
+                  ) : (
+                    <a
+                      href={link.href}
+                      class="text-sm transition-colors text-foreground-muted hover:text-foreground"
+                    >
+                      {link.label}
+                    </a>
+                  );
+                })}
               </div>
             )}
           </div>
