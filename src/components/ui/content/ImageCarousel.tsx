@@ -16,7 +16,6 @@ import {
   DialogTitle,
   DialogClose,
 } from "@/components/ui/shadcn/dialog"
-// Import the Skeleton component
 import { Skeleton } from "@/components/ui/shadcn/skeleton"
 
 export interface CarouselImage {
@@ -33,7 +32,6 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
   const [dialogApi, setDialogApi] = React.useState<CarouselApi>()
   const [selectedIndex, setSelectedIndex] = React.useState(0)
   
-  // State to track loaded images for both main carousel and lightbox
   const [loadedImages, setLoadedImages] = React.useState<Record<string, boolean>>({})
 
   if (!images || images.length === 0) return null;
@@ -45,7 +43,6 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
     }
   }
 
-  // Function to flag an image as fully loaded
   const handleImageLoad = (key: string) => {
     setLoadedImages((prev) => ({ ...prev, [key]: true }));
   };
@@ -77,13 +74,18 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
                     onClick={() => handleImageClick(index)}
                     className="overflow-hidden rounded-2xl border border-border bg-surface-primary shadow-sm aspect-video relative flex items-center justify-center cursor-pointer"
                   >
-                    {/* The Skeleton sits at the absolute bottom of the stack */}
                     <Skeleton className="absolute inset-0 w-full h-full rounded-none" />
                     
                     <img 
                       src={image.src} 
                       alt={image.alt} 
                       onLoad={() => handleImageLoad(`main-${index}`)}
+                      /* FIXED: Robust Astro SSR Hydration check */
+                      ref={(img) => {
+                        if (img && img.complete && !loadedImages[`main-${index}`]) {
+                          handleImageLoad(`main-${index}`);
+                        }
+                      }}
                       className="absolute inset-0 object-cover w-full h-full transition-opacity duration-300"
                       style={{ opacity: loadedImages[`main-${index}`] ? 1 : 0 }}
                       loading={index === 0 ? "eager" : "lazy"} 
@@ -119,21 +121,24 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
               <CarouselItem key={index} className="h-full flex items-center justify-center pl-0">
                 <div className="relative flex items-center justify-center w-full h-full p-4 md:p-8">
                   
-                  {/* INVISIBLE BACKDROP: Clicking the empty space still closes the modal! */}
                   <DialogClose asChild>
                     <div className="absolute inset-0 z-0 cursor-default" />
                   </DialogClose>
 
-                  {/* IMAGE & BUTTON WRAPPER */}
                   <div className="relative z-10 group/lightbox pointer-events-auto">
                     
                     <Skeleton className="absolute inset-0 w-full h-full rounded-lg" />
 
-                    {/* The Lightbox Image */}
                     <img 
                       src={image.src} 
                       alt={image.alt} 
                       onLoad={() => handleImageLoad(`lightbox-${index}`)}
+                      /* FIXED: Robust Astro SSR Hydration check */
+                      ref={(img) => {
+                        if (img && img.complete && !loadedImages[`lightbox-${index}`]) {
+                          handleImageLoad(`lightbox-${index}`);
+                        }
+                      }}
                       className="relative max-h-[90vh] max-w-[95vw] md:max-w-[90vw] object-contain rounded-lg shadow-2xl drop-shadow-2xl cursor-grab active:cursor-grabbing transition-opacity duration-300"
                       style={{ opacity: loadedImages[`lightbox-${index}`] ? 1 : 0 }}
                       loading="lazy"

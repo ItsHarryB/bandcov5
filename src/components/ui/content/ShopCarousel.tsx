@@ -148,8 +148,6 @@ function ProductCard({ product, storeName, gradientStyle }: { product: Product, 
           <div className="card-actions justify-end mt-5">
             <ExternalLink 
               href={product.url}
-              // Set to false to avoid interrupting the checkout flow, 
-              // but it will still show the informative Hover Card on desktop!
               requireConfirm={false} 
               showIndicator={false}
               className="btn border-none rounded-xl text-white w-full opacity-90 hover:opacity-100 hover:scale-[1.02] transition-all shadow-sm flex justify-center items-center"
@@ -182,7 +180,8 @@ function ProductCard({ product, storeName, gradientStyle }: { product: Product, 
                       <div role="button" className="absolute inset-0 z-0 cursor-pointer md:cursor-default" aria-label="Close Lightbox" />
                     </DialogClose>
 
-                    <div className="relative z-10 group/lightbox pointer-events-auto w-full max-w-[85vw] md:max-w-none md:w-auto max-h-[70vh] md:h-full md:max-h-[85vh] aspect-[3/4] rounded-lg shadow-2xl drop-shadow-2xl overflow-hidden bg-black/5">
+                    {/* FIXED: Replaced ambiguous scaling with strict widths/heights to stop zero-width collapse */}
+                    <div className="relative z-10 group/lightbox pointer-events-auto w-[85vw] sm:w-[60vw] md:w-auto md:h-[85vh] aspect-[3/4] rounded-lg shadow-2xl drop-shadow-2xl overflow-hidden bg-black/5 shrink-0">
                       
                       <Skeleton className="absolute inset-0 w-full h-full rounded-none" />
                       
@@ -223,7 +222,6 @@ export function ShopCarousel({ products, storeName }: ShopCarouselProps) {
       <Carousel 
         opts={{ 
           align: "start", 
-          // UPDATED: Set dragFree to false so it smoothly snaps to the nearest card
           dragFree: false,
           breakpoints: {
             '(min-width: 1024px)': { watchDrag: products.length > 3 }
