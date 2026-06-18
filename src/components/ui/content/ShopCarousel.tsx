@@ -68,7 +68,8 @@ function ProductCard({ product, storeName, gradientStyle }: { product: Product, 
 
   return (
     <Dialog>
-      <div className="card bg-surface-primary shadow-sm hover:shadow-lg transition-shadow border border-border flex flex-col group overflow-hidden rounded-2xl">
+      {/* HARDWARE ACCELERATION: Added transform-gpu to stop the text below from glitching */}
+      <div className="card bg-surface-primary shadow-sm hover:shadow-lg transition-shadow border border-border flex flex-col group overflow-hidden rounded-2xl transform-gpu">
         
         <DialogTrigger asChild>
           <figure 
@@ -180,8 +181,8 @@ function ProductCard({ product, storeName, gradientStyle }: { product: Product, 
                       <div role="button" className="absolute inset-0 z-0 cursor-pointer md:cursor-default" aria-label="Close Lightbox" />
                     </DialogClose>
 
-                    {/* FIXED: Replaced ambiguous scaling with strict widths/heights to stop zero-width collapse */}
-                    <div className="relative z-10 group/lightbox pointer-events-auto w-[85vw] sm:w-[60vw] md:w-auto md:h-[85vh] aspect-[3/4] rounded-lg shadow-2xl drop-shadow-2xl overflow-hidden bg-black/5 shrink-0">
+                    {/* HARDWARE ACCELERATION: Added transform-gpu to offload trackpad scrolling to graphics card */}
+                    <div className="relative z-10 group/lightbox pointer-events-auto w-[85vw] sm:w-[60vw] md:w-auto md:h-[85vh] aspect-[3/4] rounded-lg shadow-2xl drop-shadow-2xl overflow-hidden bg-black/5 shrink-0 transform-gpu will-change-transform">
                       
                       <Skeleton className="absolute inset-0 w-full h-full rounded-none" />
                       

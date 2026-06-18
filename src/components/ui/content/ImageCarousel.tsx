@@ -47,14 +47,8 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
     setLoadedImages((prev) => ({ ...prev, [key]: true }));
   };
 
-  React.useEffect(() => {
-    if (!dialogApi || !mainApi) return
-
-    dialogApi.on("select", () => {
-      const newIndex = dialogApi.selectedScrollSnap();
-      mainApi.scrollTo(newIndex);
-    })
-  }, [dialogApi, mainApi])
+  // NOTE: Background sync useEffect intentionally removed to maximize performance.
+  // The background carousel now freezes while the Lightbox is open.
 
   return (
     <Dialog>
@@ -80,7 +74,6 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
                       src={image.src} 
                       alt={image.alt} 
                       onLoad={() => handleImageLoad(`main-${index}`)}
-                      /* FIXED: Robust Astro SSR Hydration check */
                       ref={(img) => {
                         if (img && img.complete && !loadedImages[`main-${index}`]) {
                           handleImageLoad(`main-${index}`);
@@ -98,10 +91,10 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
           ))}
         </CarouselContent>
         
-        <CarouselPrevious className="left-4 bg-background/80 hover:bg-background border-none shadow-sm opacity-0 transition-opacity group-hover:opacity-100" />
-        <CarouselNext className="right-4 bg-background/80 hover:bg-background border-none shadow-sm opacity-0 transition-opacity group-hover:opacity-100" />
+        {/* PARITY: Arrows updated to match Shop Carousel (48px, delayed fade, hidden on mobile) */}
+        <CarouselPrevious className="hidden md:flex w-12 h-12 [&>svg]:w-6 [&>svg]:h-6 left-4 bg-background/80 hover:bg-background border-none shadow-sm opacity-0 transition-opacity duration-300 delay-500 group-hover:opacity-100 group-hover:delay-0 group-focus-within:opacity-100 group-focus-within:delay-0 disabled:opacity-0 disabled:hidden" />
+        <CarouselNext className="hidden md:flex w-12 h-12 [&>svg]:w-6 [&>svg]:h-6 right-4 bg-background/80 hover:bg-background border-none shadow-sm opacity-0 transition-opacity duration-300 delay-500 group-hover:opacity-100 group-hover:delay-0 group-focus-within:opacity-100 group-focus-within:delay-0 disabled:opacity-0 disabled:hidden" />
       </Carousel>
-
 
       {/* 2. THE FULL-SCREEN LIGHTBOX */}
       <DialogContent 
@@ -125,7 +118,8 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
                     <div className="absolute inset-0 z-0 cursor-default" />
                   </DialogClose>
 
-                  <div className="relative z-10 group/lightbox pointer-events-auto">
+                  {/* HARDWARE ACCELERATION: Added transform-gpu to offload trackpad scrolling to graphics card */}
+                  <div className="relative z-10 group/lightbox pointer-events-auto transform-gpu will-change-transform">
                     
                     <Skeleton className="absolute inset-0 w-full h-full rounded-lg" />
 
@@ -133,7 +127,6 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
                       src={image.src} 
                       alt={image.alt} 
                       onLoad={() => handleImageLoad(`lightbox-${index}`)}
-                      /* FIXED: Robust Astro SSR Hydration check */
                       ref={(img) => {
                         if (img && img.complete && !loadedImages[`lightbox-${index}`]) {
                           handleImageLoad(`lightbox-${index}`);
@@ -150,8 +143,8 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
                       <span className="sr-only">Close</span>
                     </DialogClose>
 
-                    <CarouselPrevious className="left-3 md:left-4 bg-background/60 hover:bg-background border-none shadow-md backdrop-blur-md z-50 opacity-100 md:opacity-0 md:transition-opacity md:group-hover/lightbox:opacity-100" />
-                    <CarouselNext className="right-3 md:right-4 bg-background/60 hover:bg-background border-none shadow-md backdrop-blur-md z-50 opacity-100 md:opacity-0 md:transition-opacity md:group-hover/lightbox:opacity-100" />
+                    <CarouselPrevious className="hidden md:flex w-12 h-12 [&>svg]:w-6 [&>svg]:h-6 left-3 md:left-4 bg-background/60 hover:bg-background border-none shadow-md backdrop-blur-md z-50 opacity-100 md:opacity-0 transition-opacity duration-300 delay-500 md:group-hover/lightbox:opacity-100 md:group-hover/lightbox:delay-0 disabled:opacity-0 disabled:hidden" />
+                    <CarouselNext className="hidden md:flex w-12 h-12 [&>svg]:w-6 [&>svg]:h-6 right-3 md:right-4 bg-background/60 hover:bg-background border-none shadow-md backdrop-blur-md z-50 opacity-100 md:opacity-0 transition-opacity duration-300 delay-500 md:group-hover/lightbox:opacity-100 md:group-hover/lightbox:delay-0 disabled:opacity-0 disabled:hidden" />
                   </div>
 
                 </div>
@@ -160,7 +153,6 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
           </CarouselContent>
         </Carousel>
       </DialogContent>
-
     </Dialog>
   )
 }

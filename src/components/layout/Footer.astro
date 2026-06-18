@@ -2,19 +2,6 @@
 /**
  * Footer Component
  * Flexible footer with variant-based configuration
- *
- * Layouts:
- * - simple: Single row with logo, nav links, and social
- * - columns: Multi-column layout with link groups
- * - minimal: Just copyright
- * - stacked: Vertically stacked logo, nav, copyright
- *
- * Features:
- * - Dynamic navigation from nav.config.ts (default) or custom nav prop
- * - Social links with icon support
- * - Copyright with {year} placeholder
- * - Legal links section
- * - Full slot support for customization
  */
 import type { HTMLAttributes } from 'astro/types';
 import { cn } from '@/lib/cn';
@@ -49,29 +36,17 @@ export interface LegalLink {
 }
 
 interface Props extends HTMLAttributes<'footer'> {
-  /** Layout style */
   layout?: 'simple' | 'columns' | 'minimal' | 'stacked';
-  /** Number of columns (only for columns layout) */
   columns?: 2 | 3 | 4;
-  /** Background variant */
   background?: 'default' | 'secondary' | 'invert';
-  /** Override default navigation */
   nav?: NavItem[];
-  /** Link groups for columns layout */
   linkGroups?: FooterLinkGroup[];
-  /** Social media links */
   socialLinks?: SocialLink[];
-  /** Show social links */
   showSocial?: boolean;
-  /** Show copyright */
   showCopyright?: boolean;
-  /** Custom copyright text (supports {year} and {siteName} placeholders) */
   copyright?: string;
-  /** Legal links (Privacy, Terms, etc.) */
   legalLinks?: LegalLink[];
-  /** Hide logo */
   hideLogo?: boolean;
-  /** Tagline text under logo */
   tagline?: string;
 }
 
@@ -92,46 +67,38 @@ const {
   ...attrs
 } = Astro.props;
 
-// Get navigation items
 const defaultNav: NavItem[] = getNavItems().map((item: NavConfigItem) => ({
   label: item.label,
   href: item.href,
 }));
 const navItems: NavItem[] = nav || defaultNav;
 
-// Default external links if none provided via nav
 const defaultExternalLinks: NavItem[] = [
   { label: 'GitHub', href: 'https://github.com/ItsHarryB', external: true },
   { label: 'License', href: 'https://github.com/southwellmedia/velocity/blob/main/LICENSE', external: true },
 ];
 
-// Add external links to nav if using default nav
 const allNavItems: NavItem[] = nav ? navItems : [...navItems, ...defaultExternalLinks];
 
-// Process copyright text
 const currentYear = new Date().getFullYear();
 const processedCopyright = copyright
   .replace('{year}', String(currentYear))
   .replace('{siteName}', siteConfig.name);
 
-// Check slots
 const hasLogoSlot = Astro.slots.has('logo');
 const hasTaglineSlot = Astro.slots.has('tagline');
 const hasColumnsSlot = Astro.slots.has('columns');
 const hasSocialSlot = Astro.slots.has('social');
 const hasBottomSlot = Astro.slots.has('bottom');
 
-// Compute footer classes
 const footerClasses = cn(footerVariants({ background }), className);
 
-// Social platform to icon mapping
 const socialIcons: Record<string, string> = {
   github: 'github',
   twitter: 'twitter',
   linkedin: 'linkedin',
 };
 
-// Get icon for social platform
 function getSocialIcon(platform: string): string {
   return socialIcons[platform] || platform;
 }
@@ -141,7 +108,6 @@ function getSocialIcon(platform: string): string {
   <div class="mx-auto max-w-6xl px-6">
     {layout === 'simple' && (
       <div class="flex flex-col md:flex-row justify-between items-center gap-[var(--space-stack-lg)]">
-        {/* Logo & Tagline */}
         {!hideLogo && (
           <div class="flex flex-col items-center md:items-start gap-2">
             {hasLogoSlot ? (
@@ -162,7 +128,6 @@ function getSocialIcon(platform: string): string {
           </div>
         )}
 
-        {/* Navigation Links */}
         <nav class="flex flex-wrap justify-center gap-[var(--space-inline-lg)] md:gap-[var(--space-stack-lg)] text-sm font-medium text-foreground-muted">
           {allNavItems.map((item) => {
             const isExternal = item.external || item.href.startsWith('http');
@@ -173,6 +138,7 @@ function getSocialIcon(platform: string): string {
                 className="transition-colors hover:text-foreground"
                 showIndicator={true}
                 requireConfirm={true}
+                disableHover={true}
               >
                 {item.label}
               </ExternalLink>
@@ -187,7 +153,6 @@ function getSocialIcon(platform: string): string {
           })}
         </nav>
 
-        {/* Social Links */}
         {showSocial && socialLinks.length > 0 && (
           hasSocialSlot ? (
             <slot name="social" />
@@ -200,6 +165,7 @@ function getSocialIcon(platform: string): string {
                   className="transition-colors text-foreground-muted hover:text-foreground"
                   showIndicator={false}
                   requireConfirm={true}
+                  disableHover={true}
                   aria-label={social.label || `Follow us on ${social.platform}`}
                 >
                   <Icon name={getSocialIcon(social.platform)} size="md" />
@@ -214,7 +180,6 @@ function getSocialIcon(platform: string): string {
     {layout === 'columns' && (
       <>
         <div class={footerColumnGridVariants({ columns })}>
-          {/* Logo Column */}
           {!hideLogo && (
             <div class="space-y-[var(--space-stack-md)]">
               {hasLogoSlot ? (
@@ -232,7 +197,6 @@ function getSocialIcon(platform: string): string {
                   {hasTaglineSlot ? <slot name="tagline" /> : tagline}
                 </p>
               )}
-              {/* Social Links in columns layout */}
               {showSocial && socialLinks.length > 0 && (
                 <div class="flex items-center gap-[var(--space-stack-md)] pt-2">
                   {socialLinks.map((social) => (
@@ -242,6 +206,7 @@ function getSocialIcon(platform: string): string {
                       className="transition-colors text-foreground-muted hover:text-foreground"
                       showIndicator={false}
                       requireConfirm={true}
+                      disableHover={true}
                       aria-label={social.label || `Follow us on ${social.platform}`}
                     >
                       <Icon name={getSocialIcon(social.platform)} size="md" />
@@ -252,7 +217,6 @@ function getSocialIcon(platform: string): string {
             </div>
           )}
 
-          {/* Link Groups */}
           {hasColumnsSlot ? (
             <slot name="columns" />
           ) : (
@@ -273,6 +237,7 @@ function getSocialIcon(platform: string): string {
                             className="text-sm transition-colors text-foreground-muted hover:text-foreground"
                             showIndicator={true}
                             requireConfirm={true}
+                            disableHover={true}
                           >
                             {link.label}
                           </ExternalLink>
@@ -293,7 +258,6 @@ function getSocialIcon(platform: string): string {
           )}
         </div>
 
-        {/* Bottom section */}
         {(showCopyright || legalLinks.length > 0) && (
           <div class="mt-[var(--space-section-header)] pt-[var(--space-stack-lg)] border-t border-border flex flex-col md:flex-row justify-between items-center gap-[var(--space-stack-md)]">
             {hasBottomSlot ? (
@@ -316,6 +280,7 @@ function getSocialIcon(platform: string): string {
                           className="text-sm transition-colors text-foreground-muted hover:text-foreground"
                           showIndicator={true}
                           requireConfirm={true}
+                          disableHover={true}
                         >
                           {link.label}
                         </ExternalLink>
@@ -349,7 +314,6 @@ function getSocialIcon(platform: string): string {
 
     {layout === 'stacked' && (
       <div class="flex flex-col items-center gap-[var(--space-stack-lg)] text-center">
-        {/* Logo */}
         {!hideLogo && (
           hasLogoSlot ? (
             <slot name="logo" />
@@ -363,14 +327,12 @@ function getSocialIcon(platform: string): string {
           )
         )}
 
-        {/* Tagline */}
         {(hasTaglineSlot || tagline) && (
           <p class="text-sm max-w-md text-foreground-muted">
             {hasTaglineSlot ? <slot name="tagline" /> : tagline}
           </p>
         )}
 
-        {/* Navigation Links */}
         <nav class="flex flex-wrap justify-center gap-[var(--space-inline-lg)] text-sm font-medium text-foreground-muted">
           {allNavItems.map((item) => {
             const isExternal = item.external || item.href.startsWith('http');
@@ -381,6 +343,7 @@ function getSocialIcon(platform: string): string {
                 className="transition-colors hover:text-foreground"
                 showIndicator={true}
                 requireConfirm={true}
+                disableHover={true}
               >
                 {item.label}
               </ExternalLink>
@@ -395,7 +358,6 @@ function getSocialIcon(platform: string): string {
           })}
         </nav>
 
-        {/* Social Links */}
         {showSocial && socialLinks.length > 0 && (
           <div class="flex items-center gap-[var(--space-stack-md)]">
             {socialLinks.map((social) => (
@@ -405,6 +367,7 @@ function getSocialIcon(platform: string): string {
                 className="transition-colors text-foreground-muted hover:text-foreground"
                 showIndicator={false}
                 requireConfirm={true}
+                disableHover={true}
                 aria-label={social.label || `Follow us on ${social.platform}`}
               >
                 <Icon name={getSocialIcon(social.platform)} size="md" />
@@ -413,7 +376,6 @@ function getSocialIcon(platform: string): string {
           </div>
         )}
 
-        {/* Copyright & Legal */}
         {(showCopyright || legalLinks.length > 0) && (
           <div class="pt-[var(--space-stack-lg)] border-t border-border w-full flex flex-col items-center gap-[var(--space-stack-md)]">
             {showCopyright && (
@@ -432,6 +394,7 @@ function getSocialIcon(platform: string): string {
                       className="text-sm transition-colors text-foreground-muted hover:text-foreground"
                       showIndicator={true}
                       requireConfirm={true}
+                      disableHover={true}
                     >
                       {link.label}
                     </ExternalLink>
@@ -452,6 +415,5 @@ function getSocialIcon(platform: string): string {
     )}
   </div>
 
-  {/* Default slot for additional content */}
   <slot />
 </footer>
