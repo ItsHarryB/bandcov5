@@ -15,18 +15,21 @@ export function GlobalExternalLinkDialog() {
   const [isOpen, setIsOpen] = React.useState(false);
   const [href, setHref] = React.useState("");
 
-  // Listen for the custom event fired by ANY ExternalLink on the site
   React.useEffect(() => {
-    const handleOpen = (e: CustomEvent<{ href: string }>) => {
-      setHref(e.detail.href);
+    // Safely cast the generic Event to our CustomEvent
+    const handleOpen = (e: Event) => {
+      const customEvent = e as CustomEvent<{ href: string }>;
+      setHref(customEvent.detail.href);
       setIsOpen(true);
     };
 
-    window.addEventListener('open-external-dialog', handleOpen as EventListener);
-    return () => window.removeEventListener('open-external-dialog', handleOpen as EventListener);
+    window.addEventListener('open-external-dialog', handleOpen);
+    return () => window.removeEventListener('open-external-dialog', handleOpen);
   }, []);
 
   const domain = React.useMemo(() => {
+    // Failsafe in case href is empty on the very first server render
+    if (!href) return 'an external site';
     try { return new URL(href).hostname.replace('www.', ''); } 
     catch { return 'an external site'; }
   }, [href]);
@@ -36,8 +39,8 @@ export function GlobalExternalLinkDialog() {
     if (href) window.open(href, '_blank', 'noopener,noreferrer');
   };
 
-  if (!isOpen) return null;
-
+  // FIXED: Removed "if (!isOpen) return null;"
+  // Returning the Dialog directly prevents Astro from generating a fatal empty island.
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent showCloseButton={false} className="sm:max-w-md z-[100]">
@@ -56,7 +59,6 @@ export function GlobalExternalLinkDialog() {
           </DialogDescription>
         </DialogHeader>
         
-        {/* FIXED: w-full has been removed from this line to allow edge-to-edge stretching */}
         <DialogFooter className="mt-6 flex flex-col-reverse sm:flex-row gap-3 sm:justify-between">
           <Button variant="outline" onClick={() => setIsOpen(false)} className="w-full sm:w-auto">
             Cancel

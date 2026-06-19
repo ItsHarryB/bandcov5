@@ -195,8 +195,8 @@ if (includeOrgSchema) {
       <div slot="bottom" class="hidden"></div>
     </Footer>
 
-    {/* FIXED: The Global Dialog must live at the root layout level so it can catch events from anywhere */}
-    <GlobalExternalLinkDialog client:idle />
+    {/* ADDED transition:persist to keep the dialog alive across all page navigations */}
+    <GlobalExternalLinkDialog client:idle transition:persist="global-external-link-dialog" />
     <ConsentBanner />
   </body>
 </html>
