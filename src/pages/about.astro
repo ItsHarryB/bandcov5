@@ -14,6 +14,9 @@ import Separator from '@/components/ui/layout/Separator';
 import TechStack from '@/components/landing/TechStack.astro';
 import { ImageCarousel } from '@/components/ui/content/ImageCarousel';
 
+// ADDED: Import Image optimization tools
+import { Image, getImage } from 'astro:assets';
+
 import pennyImg from '../assets/images/cats/penny.jpg';
 import poppyImg from '../assets/images/cats/poppy.jpg';
 import lunaImg from '../assets/images/cats/luna.jpg';
@@ -52,24 +55,38 @@ const webinfo = [
   }
 ]
 
-const catPhotos = [
-  { src: pennyImg.src, alt: "Penny, a British shorthair black cat with orange eyes, laid by the window." },
-  { src: poppyImg.src, alt: "Poppy, a British shorthair blue cat, with orange eyes, stood up by the window." },
-  { src: lunaImg.src, alt: "Luna, a British shorthair fawn-coloured cat, with orange eyes sat like a loaf on a similar coloured carpet." },
+// OPTIMIZATION: Created a raw array, then mapped through it with getImage to resize to 800px WebP
+const rawCatPhotos = [
+  { img: pennyImg, alt: "Penny, a British shorthair black cat with orange eyes, laid by the window." },
+  { img: poppyImg, alt: "Poppy, a British shorthair blue cat, with orange eyes, stood up by the window." },
+  { img: lunaImg, alt: "Luna, a British shorthair fawn-coloured cat, with orange eyes sat like a loaf on a similar coloured carpet." },
 ];
 
-const hobbyPhotos = [
-  { src: badmintonImg.src, alt: "Me and my girlfriend playing badminton." },
-  { src: computerImg.src, alt: "The internals of a Desktop PC I had." },
-  { src: gymImg.src, alt: "A photo of some dumbbells at the gym." },
+const catPhotos = await Promise.all(
+  rawCatPhotos.map(async (photo) => {
+    const optimized = await getImage({ src: photo.img, format: 'webp', width: 1600, quality: 95 });
+    return { src: optimized.src, alt: photo.alt };
+  })
+);
+
+const rawHobbyPhotos = [
+  { img: badmintonImg, alt: "Me and my girlfriend playing badminton." },
+  { img: computerImg, alt: "The internals of a Desktop PC I had." },
+  { img: gymImg, alt: "A photo of some dumbbells at the gym." },
 ];
+
+const hobbyPhotos = await Promise.all(
+  rawHobbyPhotos.map(async (photo) => {
+    const optimized = await getImage({ src: photo.img, format: 'webp', width: 1600, quality: 95 });
+    return { src: optimized.src, alt: photo.alt };
+  })
+);
 ---
 
 <PageLayout
   title="About"
   description="About Brighton and Co - who we are, what this site is, and more."
 >
-  {/* HERO SECTION WITH SPLIT LAYOUT */}
   <Hero layout="split" size="sm">
     <Badge slot="badge" pill pulse>Want to know more about B&CO?</Badge>
     <h1 slot="title">
@@ -79,12 +96,13 @@ const hobbyPhotos = [
       Learn more about Brighton and Co - who made what you're looking at right now, and more.
     </p>
 
-    {/* THE MEMOJI CARD IN THE ASIDE SLOT */}
     <div slot="aside" class="flex flex-col items-center text-center bg-surface-primary border border-border rounded-2xl shadow-sm p-8 w-full max-w-sm mx-auto transition-all hover:shadow-md">
       <figure class="w-32 h-32 mb-6">
-        <img
-          src={hiwaveImg.src}
+        {/* OPTIMIZATION: Replaced standard img with Astro Image component, target width 256px */}
+        <Image
+          src={hiwaveImg}
           alt="My memoji waving" 
+          width={256}
           class="w-full h-full object-contain drop-shadow-sm hover:scale-105 transition-transform duration-300" 
         />
       </figure>
@@ -93,10 +111,8 @@ const hobbyPhotos = [
     </div>
   </Hero>
   
-  {/* ACCORDION SECTION */}
   <section class="py-12 md:py-16">
       <div class="container max-w-3xl">
-        {/* Centered this heading to match the flow of the Memoji card above it! */}
         <div class="text-center mb-10">
           <h2 class="text-3xl font-bold text-foreground">About the Site:</h2>
           <p class="text-foreground-muted mt-2">Some key details about this site.</p>
@@ -114,7 +130,6 @@ const hobbyPhotos = [
   <section class="py-16 bg-surface-secondary border-y border-border">
     <div class="container max-w-6xl">
       
-      {/* The new 2-column grid layout! */}
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-start">
         
         <div class="flex flex-col gap-6">

@@ -3,12 +3,14 @@
  * Logo Component
  *
  * To customize: Replace the SVG files in src/assets/branding/
- * - logomark.svg       → Icon for light backgrounds
+ * - logomark.svg      → Icon for light backgrounds
  * - logomark-dark.svg  → Icon for dark backgrounds
  * - logo-full.svg      → Full logo for light backgrounds
  * - logo-full-dark.svg → Full logo for dark backgrounds
  */
 import siteConfig from '@/config/site.config';
+// 1. Import Astro's native Image component
+import { Image } from 'astro:assets';
 
 import logomark from '@/assets/branding/logomark.png';
 import logomarkDark from '@/assets/branding/logomark-dark.png';
@@ -33,37 +35,52 @@ const {
   class: className,
 } = Astro.props;
 
+// Notice we no longer use .src here! We pass the whole imported object to <Image />
 const lightLogo = variant === 'full' ? logoFull : logomark;
 const darkLogo = variant === 'full' ? logoFullDark : logomarkDark;
 
 const sizeClasses: Record<string, string> = {
-  sm: 'h-5 w-5',
-  md: 'h-6 w-6',
-  lg: 'h-8 w-8',
-  xl: 'h-12 w-12',
-  '2xl': 'h-24 w-24',
+  sm: 'h-5 w-5',     // 20px
+  md: 'h-6 w-6',     // 24px
+  lg: 'h-8 w-8',     // 32px
+  xl: 'h-12 w-12',   // 48px
+  '2xl': 'h-24 w-24',// 96px
+};
+
+// 2. We define specific pixel widths for Astro's optimizer.
+// We double the size of the CSS classes to ensure they look crisp on high-density/Retina displays!
+const imageWidths: Record<string, number> = {
+  sm: 40,
+  md: 48,
+  lg: 64,
+  xl: 96,
+  '2xl': 192,
 };
 
 const sizeClass = sizeClasses[size] || sizeClasses.md;
+const targetWidth = imageWidths[size] || imageWidths.md;
 ---
 
 <span class:list={['inline-block', className]}>
   {forceDark ? (
-    <img
-      src={darkLogo.src}
+    <Image
+      src={darkLogo}
       alt={siteConfig.branding.logo.alt}
+      width={targetWidth}
       class:list={[sizeClass]}
     />
   ) : (
     <Fragment>
-      <img
-        src={lightLogo.src}
+      <Image
+        src={lightLogo}
         alt={siteConfig.branding.logo.alt}
+        width={targetWidth}
         class:list={[sizeClass, 'block dark:hidden']}
       />
-      <img
-        src={darkLogo.src}
+      <Image
+        src={darkLogo}
         alt=""
+        width={targetWidth}
         class:list={[sizeClass, 'hidden dark:block']}
         aria-hidden="true"
       />

@@ -8,22 +8,21 @@ import { SiVinted, SiEbay } from "react-icons/si";
 import Badge from '@/components/ui/data-display/Badge/Badge.astro';
 
 import { getCollection } from 'astro:content';
-import { getImage } from 'astro:assets';
-// ADDED: Import your new interactive link component
+// ADDED: Import Image component alongside getImage
+import { getImage, Image } from 'astro:assets';
 import { ExternalLink } from '@/components/ui/content/ExternalLink';
 
-// Fetch all entries from both database collections
 const rawVintedItems = await getCollection('vinted');
 const rawEbayItems = await getCollection('ebay');
 
-// Filter for items that are currently active and optimize images through Astro
+// OPTIMIZATION: Reduced width from 1080 to 800. Carousel cards don't need 1080px widths.
 const vintedItems = await Promise.all(
   rawVintedItems
     .filter(item => item.data.status === 'For Sale')
     .map(async (item) => {
       const optimizedImages = await Promise.all(
         item.data.images.map(async (img) => {
-          const optimized = await getImage({ src: img, format: 'webp', width: 1080, quality: 85 });
+          const optimized = await getImage({ src: img, format: 'webp', width: 800, quality: 80 });
           return optimized.src;
         })
       );
@@ -41,7 +40,7 @@ const ebayItems = await Promise.all(
     .map(async (item) => {
       const optimizedImages = await Promise.all(
         item.data.images.map(async (img) => {
-          const optimized = await getImage({ src: img, format: 'webp', width: 1080, quality: 85 });
+          const optimized = await getImage({ src: img, format: 'webp', width: 800, quality: 80 });
           return optimized.src;
         })
       );
@@ -62,9 +61,11 @@ const ebayItems = await Promise.all(
     <Badge slot="badge" pill pulse>Shop my eBay and Vinted pages</Badge>
 
     <h1 slot="title" class="flex flex-col items-center gap-6">
-      <img 
-        src={shopLogo.src} 
+      {/* OPTIMIZATION: Replaced standard img with Astro Image component, target width 192px (2x the w-24 size) */}
+      <Image 
+        src={shopLogo} 
         alt="SHOP: B&Co Logo" 
+        width={192}
         class="w-24 h-24 object-contain drop-shadow-md" 
       />
       <span>
@@ -86,7 +87,6 @@ const ebayItems = await Promise.all(
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 px-4 md:px-0">
         <div>
           <h2 class="text-3xl font-bold text-foreground flex items-center gap-3">
-            {/* UPDATED: Replaced <a> with ExternalLink, hid the icon, kept the dialog */}
             <ExternalLink 
               href="https://vinted.co.uk/member/272494517" 
               client:load
@@ -101,7 +101,6 @@ const ebayItems = await Promise.all(
             A selection of items from the SHOP: B&Co Vinted -
           </p>
         </div>
-        {/* UPDATED: Replaced <a> with ExternalLink */}
         <ExternalLink 
           href="https://vinted.co.uk/member/272494517" 
           client:load
@@ -124,7 +123,6 @@ const ebayItems = await Promise.all(
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 px-4 md:px-0">
         <div>
           <h2 class="text-3xl font-bold text-foreground flex items-center gap-3">
-             {/* UPDATED: Replaced <a> with ExternalLink */}
             <ExternalLink 
               href="https://ebay.co.uk/usr/itsharryb/" 
               client:load
@@ -139,7 +137,6 @@ const ebayItems = await Promise.all(
             A selection of items from the SHOP: B&Co eBay -
           </p>
         </div>
-        {/* UPDATED: Replaced <a> with ExternalLink */}
         <ExternalLink 
           href="https://ebay.co.uk/usr/itsharryb/" 
           client:load
