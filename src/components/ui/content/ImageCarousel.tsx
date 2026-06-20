@@ -18,8 +18,10 @@ import {
 } from "@/components/ui/shadcn/dialog"
 import { Skeleton } from "@/components/ui/shadcn/skeleton"
 
+// UPDATED: Now expects the dual-image structure from Astro
 export interface CarouselImage {
   src: string;
+  fullSrc: string; // Added the full-res property
   alt: string;
 }
 
@@ -47,9 +49,6 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
     setLoadedImages((prev) => ({ ...prev, [key]: true }));
   };
 
-  // NOTE: Background sync useEffect intentionally removed to maximize performance.
-  // The background carousel now freezes while the Lightbox is open.
-
   return (
     <Dialog>
       {/* 1. THE MAIN PAGE CAROUSEL */}
@@ -70,6 +69,7 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
                   >
                     <Skeleton className="absolute inset-0 w-full h-full rounded-none" />
                     
+                    {/* FAST THUMBNAIL FOR THE CARD */}
                     <img 
                       src={image.src} 
                       alt={image.alt} 
@@ -91,7 +91,6 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
           ))}
         </CarouselContent>
         
-        {/* PARITY: Arrows updated to match Shop Carousel (48px, delayed fade, hidden on mobile) */}
         <CarouselPrevious className="hidden md:flex w-12 h-12 [&>svg]:w-6 [&>svg]:h-6 left-4 bg-background/80 hover:bg-background border-none shadow-sm opacity-0 transition-opacity duration-300 delay-500 group-hover:opacity-100 group-hover:delay-0 group-focus-within:opacity-100 group-focus-within:delay-0 disabled:opacity-0 disabled:hidden" />
         <CarouselNext className="hidden md:flex w-12 h-12 [&>svg]:w-6 [&>svg]:h-6 right-4 bg-background/80 hover:bg-background border-none shadow-sm opacity-0 transition-opacity duration-300 delay-500 group-hover:opacity-100 group-hover:delay-0 group-focus-within:opacity-100 group-focus-within:delay-0 disabled:opacity-0 disabled:hidden" />
       </Carousel>
@@ -118,13 +117,13 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
                     <div className="absolute inset-0 z-0 cursor-default" />
                   </DialogClose>
 
-                  {/* HARDWARE ACCELERATION: Added transform-gpu to offload trackpad scrolling to graphics card */}
                   <div className="relative z-10 group/lightbox pointer-events-auto transform-gpu will-change-transform">
                     
                     <Skeleton className="absolute inset-0 w-full h-full rounded-lg" />
 
+                    {/* HIGH RES IMAGE FOR THE LIGHTBOX */}
                     <img 
-                      src={image.src} 
+                      src={image.fullSrc} 
                       alt={image.alt} 
                       onLoad={() => handleImageLoad(`lightbox-${index}`)}
                       ref={(img) => {

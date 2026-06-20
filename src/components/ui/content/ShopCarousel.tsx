@@ -18,12 +18,18 @@ import {
 import { Skeleton } from "@/components/ui/shadcn/skeleton"
 import { ExternalLink } from "@/components/ui/content/ExternalLink"
 
+// UPDATED: Now expects the dual-image structure from Astro
+export interface ProductImage {
+  thumb: string;
+  full: string;
+}
+
 export interface Product {
   id: string;
   title: string;
   price: string;
   description: string;
-  images: string[];
+  images: ProductImage[]; // Changed from string[]
   url: string;
   condition?: string;
   size?: string;
@@ -68,7 +74,6 @@ function ProductCard({ product, storeName, gradientStyle }: { product: Product, 
 
   return (
     <Dialog>
-      {/* HARDWARE ACCELERATION: Added transform-gpu to stop the text below from glitching */}
       <div className="card bg-surface-primary shadow-sm hover:shadow-lg transition-shadow border border-border flex flex-col group overflow-hidden rounded-2xl transform-gpu">
         
         <DialogTrigger asChild>
@@ -78,10 +83,11 @@ function ProductCard({ product, storeName, gradientStyle }: { product: Product, 
           >
             <Skeleton className="absolute inset-0 w-full h-full rounded-none" />
 
-            {product.images.map((img, i) => (
+            {/* FAST THUMBNAILS FOR THE CARD */}
+            {product.images.map((imgObj, i) => (
               <img 
                 key={i} 
-                src={img} 
+                src={imgObj.thumb} 
                 alt={`${product.title} - Image ${i + 1}`} 
                 onLoad={() => handleImageLoad(i)}
                 className="absolute inset-0 object-cover w-full h-full"
@@ -173,7 +179,7 @@ function ProductCard({ product, storeName, gradientStyle }: { product: Product, 
             className="w-full h-full flex items-center justify-center group/lightbox-nav"
           >
             <CarouselContent className="h-full ml-0">
-              {product.images.map((img, i) => (
+              {product.images.map((imgObj, i) => (
                 <CarouselItem key={i} className="h-full flex items-center justify-center pl-0">
                   <div className="relative flex items-center justify-center w-full h-full p-4 md:p-8">
                     
@@ -181,17 +187,17 @@ function ProductCard({ product, storeName, gradientStyle }: { product: Product, 
                       <div role="button" className="absolute inset-0 z-0 cursor-pointer md:cursor-default" aria-label="Close Lightbox" />
                     </DialogClose>
 
-                    {/* HARDWARE ACCELERATION: Added transform-gpu to offload trackpad scrolling to graphics card */}
                     <div className="relative z-10 group/lightbox pointer-events-auto w-[85vw] sm:w-[60vw] md:w-auto md:h-[85vh] aspect-[3/4] rounded-lg shadow-2xl drop-shadow-2xl overflow-hidden bg-black/5 shrink-0 transform-gpu will-change-transform">
                       
                       <Skeleton className="absolute inset-0 w-full h-full rounded-none" />
                       
+                      {/* HIGH RES IMAGES FOR THE LIGHTBOX */}
                       <img 
-                        src={img} 
+                        src={imgObj.full} 
                         alt={`${product.title} - Expanded Image ${i + 1}`} 
-                        onLoad={() => handleImageLoad(i)}
+                        onLoad={() => handleImageLoad(`lightbox-${i}` as any)} // Type workaround for overloaded string/number key
                         className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
-                        style={{ opacity: loadedImages[i] ? 1 : 0 }}
+                        style={{ opacity: loadedImages[`lightbox-${i}` as any] ? 1 : 0 }}
                       />
 
                       <DialogClose className="absolute top-3 right-3 md:top-4 md:right-4 z-50 p-2 rounded-full bg-background/60 hover:bg-background backdrop-blur-md transition-all text-foreground outline-none opacity-100 md:opacity-0 md:group-hover/lightbox:opacity-100">

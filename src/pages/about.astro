@@ -64,8 +64,16 @@ const rawCatPhotos = [
 
 const catPhotos = await Promise.all(
   rawCatPhotos.map(async (photo) => {
-    const optimized = await getImage({ src: photo.img, format: 'webp', width: 1600, quality: 95 });
-    return { src: optimized.src, alt: photo.alt };
+    // 1. The small carousel thumbnail (Fast loading)
+    const thumb = await getImage({ src: photo.img, format: 'webp', width: 600, quality: 80 });
+    // 2. The large lightbox image (High quality)
+    const full = await getImage({ src: photo.img, format: 'webp', width: 1600, quality: 90 });
+    
+    return { 
+      src: thumb.src,       // Passes the thumbnail to the main img tag
+      fullSrc: full.src,    // Passes the high-res to the lightbox
+      alt: photo.alt 
+    };
   })
 );
 
@@ -77,8 +85,14 @@ const rawHobbyPhotos = [
 
 const hobbyPhotos = await Promise.all(
   rawHobbyPhotos.map(async (photo) => {
-    const optimized = await getImage({ src: photo.img, format: 'webp', width: 1600, quality: 95 });
-    return { src: optimized.src, alt: photo.alt };
+    const thumb = await getImage({ src: photo.img, format: 'webp', width: 600, quality: 80 });
+    const full = await getImage({ src: photo.img, format: 'webp', width: 1600, quality: 90 });
+    
+    return { 
+      src: thumb.src, 
+      fullSrc: full.src, 
+      alt: photo.alt 
+    };
   })
 );
 ---
