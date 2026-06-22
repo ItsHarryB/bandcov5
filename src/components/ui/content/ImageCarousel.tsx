@@ -18,10 +18,11 @@ import {
 } from "@/components/ui/shadcn/dialog"
 import { Skeleton } from "@/components/ui/shadcn/skeleton"
 
-// UPDATED: Now expects the dual-image structure from Astro
 export interface CarouselImage {
   src: string;
-  fullSrc: string; // Added the full-res property
+  fullSrc: string; 
+  width?: number;
+  height?: number;
   alt: string;
 }
 
@@ -69,7 +70,6 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
                   >
                     <Skeleton className="absolute inset-0 w-full h-full rounded-none" />
                     
-                    {/* FAST THUMBNAIL FOR THE CARD */}
                     <img 
                       src={image.src} 
                       alt={image.alt} 
@@ -117,22 +117,40 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
                     <div className="absolute inset-0 z-0 cursor-default" />
                   </DialogClose>
 
-                  <div className="relative z-10 group/lightbox pointer-events-auto transform-gpu will-change-transform">
+                  {/* FIX: We use a fixed-size container (w-[95vw] md:w-[85vw] lg:w-[75vw] aspect-[4/3]).
+                    Because all your images are 4:3, this container perfectly matches their shape.
+                    Every single slide will now be this exact size, regardless of the photo's native resolution.
+                  */}
+                  {/* FIX: We use a mathematically perfect dynamic width that respects BOTH max viewport width and max viewport height.
+                      By using CSS min(), the aspect ratio never breaks, so borders are mathematically impossible. */}
+                  <div 
+                    className="relative z-10 group/lightbox pointer-events-auto transform-gpu will-change-transform aspect-[4/3] rounded-lg shadow-2xl drop-shadow-2xl overflow-hidden w-[min(95vw,calc(85vh*4/3))] md:w-[min(85vw,calc(85vh*4/3))] lg:w-[min(75vw,calc(85vh*4/3))]"
+                  >
                     
-                    <Skeleton className="absolute inset-0 w-full h-full rounded-lg" />
+                    {/* The Fast Thumbnail (Fades out) */}
+                    <div 
+                      className="absolute inset-0 w-full h-full bg-center bg-no-repeat bg-contain transition-opacity duration-500 pointer-events-none"
+                      style={{ 
+                        backgroundImage: `url(${image.src})`,
+                        opacity: loadedImages[`lightbox-${index}`] ? 0 : 1 
+                      }}
+                    />
 
-                    {/* HIGH RES IMAGE FOR THE LIGHTBOX */}
+                    {/* The High-Res Image (Fades in) */}
+                    <div 
+                      className="absolute inset-0 w-full h-full bg-center bg-no-repeat bg-contain cursor-grab active:cursor-grabbing transition-opacity duration-300"
+                      style={{ 
+                        backgroundImage: `url(${image.fullSrc})`,
+                        opacity: loadedImages[`lightbox-${index}`] ? 1 : 0 
+                      }}
+                    />
+
+                    {/* Invisible image tag just to trigger the onLoad event for the fade */}
                     <img 
                       src={image.fullSrc} 
                       alt={image.alt} 
                       onLoad={() => handleImageLoad(`lightbox-${index}`)}
-                      ref={(img) => {
-                        if (img && img.complete && !loadedImages[`lightbox-${index}`]) {
-                          handleImageLoad(`lightbox-${index}`);
-                        }
-                      }}
-                      className="relative max-h-[90vh] max-w-[95vw] md:max-w-[90vw] object-contain rounded-lg shadow-2xl drop-shadow-2xl cursor-grab active:cursor-grabbing transition-opacity duration-300"
-                      style={{ opacity: loadedImages[`lightbox-${index}`] ? 1 : 0 }}
+                      className="hidden"
                       loading="lazy"
                       decoding="async"
                     />

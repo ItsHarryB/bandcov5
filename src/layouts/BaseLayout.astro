@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import '@/styles/global.css';
 import SEO from '@/components/seo/SEO.astro';
 import JsonLd from '@/components/seo/JsonLd.astro';
@@ -127,8 +128,8 @@ if (includeOrgSchema) {
     >
       {/* COLUMN 1: Logo & Tagline (Injected via slots) */}
       <a href="/" slot="logo" class="block mb-2">
-        <img src={lightLogo.src} alt="Brighton and Co" class="h-10 w-auto dark:hidden" />
-        <img src={darkLogo.src} alt="Brighton and Co" class="h-10 w-auto hidden dark:block" />
+        <Image src={lightLogo} alt="Brighton and Co" width={300} class="h-10 w-auto dark:hidden" />
+        <Image src={darkLogo} alt="Brighton and Co" width={300} class="h-10 w-auto hidden dark:block" />
       </a>
       <span slot="tagline" class="block leading-relaxed">
         Brighton and Co - showcasing personal projects, photography and other things.

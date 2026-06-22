@@ -4,6 +4,7 @@
  * Layout wrapper for standard content pages (non-landing)
  * Uses Header + Footer with content page configuration
  */
+import { Image } from 'astro:assets';
 import BaseLayout from './BaseLayout.astro';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
@@ -67,10 +68,10 @@ const { title, description, image, imageAlt, noindex, nofollow } = Astro.props;
     showCopyright={false}
   >
     {/* COLUMN 1: Logo & Tagline (Injected via slots) */}
-    <a href="/" slot="logo" class="block mb-2">
-      <img src={lightLogo.src} alt="Brighton and Co" class="h-10 w-auto dark:hidden" />
-      <img src={darkLogo.src} alt="Brighton and Co" class="h-10 w-auto hidden dark:block" />
-    </a>
+      <a href="/" slot="logo" class="block mb-2">
+        <Image src={lightLogo} alt="Brighton and Co" width={300} class="h-10 w-auto dark:hidden" />
+        <Image src={darkLogo} alt="Brighton and Co" width={300} class="h-10 w-auto hidden dark:block" />
+      </a>
     <span slot="tagline" class="block leading-relaxed">
       Brighton and Co - showcasing personal projects, photography and other things.
     </span>

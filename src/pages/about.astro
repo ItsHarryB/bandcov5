@@ -117,6 +117,8 @@ const hobbyPhotos = await Promise.all(
           src={hiwaveImg}
           alt="My memoji waving" 
           width={256}
+          loading="eager"
+          fetchpriority="high"
           class="w-full h-full object-contain drop-shadow-sm hover:scale-105 transition-transform duration-300" 
         />
       </figure>

@@ -67,6 +67,8 @@ const targetWidth = imageWidths[size] || imageWidths.md;
       src={darkLogo}
       alt={siteConfig.branding.logo.alt}
       width={targetWidth}
+      loading="eager"
+      fetchpriority="high"
       class:list={[sizeClass]}
     />
   ) : (
@@ -75,12 +77,16 @@ const targetWidth = imageWidths[size] || imageWidths.md;
         src={lightLogo}
         alt={siteConfig.branding.logo.alt}
         width={targetWidth}
+        loading="eager"
+        fetchpriority="high"
         class:list={[sizeClass, 'block dark:hidden']}
       />
       <Image
         src={darkLogo}
         alt=""
         width={targetWidth}
+        loading="eager"
+        fetchpriority="high"
         class:list={[sizeClass, 'hidden dark:block']}
         aria-hidden="true"
       />
