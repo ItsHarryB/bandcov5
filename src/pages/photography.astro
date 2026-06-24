@@ -9,6 +9,136 @@ import Card from '@/components/ui/data-display/Card/Card.astro';
 import { Hero } from '@/components/hero';
 import siteConfig from '@/config/site.config';
 import CTA from '@/components/landing/CTA.astro';
+import { ImageCarousel } from '@/components/ui/content/ImageCarousel';
+
+import { Image, getImage } from 'astro:assets';
+
+import cowImg from '../assets/images/recent/cow.jpg';
+import ducklingsImg from '../assets/images/recent/ducklings.jpg';
+import longhaircatImg from '../assets/images/recent/longhaircat.jpg';
+
+import poppy2Img from '../assets/images/more-cats/poppy2.jpg';
+import luna2Img from '../assets/images/more-cats/luna2.jpg';
+import penny2Img from '../assets/images/more-cats/penny2.jpg';
+import poppy3Img from '../assets/images/more-cats/poppy3.jpg';
+
+import praguegoldceilingImg from '../assets/images/holidays/prague/goldceiling.jpg';
+import praguebuilding1Img from '../assets/images/holidays/prague/praguebuilding1.jpg';
+import praguemeerkatImg from '../assets/images/holidays/prague/praguemeerkat.jpg';
+import praguemuseumImg from '../assets/images/holidays/prague/praguemuseum.jpg';
+import pragueriverImg from '../assets/images/holidays/prague/pragueriver.jpg';
+import praguetramImg from '../assets/images/holidays/prague/praguetram1.jpg';
+import praguer2d2Img from '../assets/images/holidays/prague/r2d2prague.jpg';
+import praguestaircaseImg from '../assets/images/holidays/prague/staircase.jpg';
+import pragueviewImg from '../assets/images/holidays/prague/viewofprague1.jpg';
+
+import pefkosrhodesrock1Img from '../assets/images/holidays/pefkos-rhodes/lindosrock1.jpg';
+import pefkosrhodesrock2Img from '../assets/images/holidays/pefkos-rhodes/lindosrock2.jpg';
+import pefkosrhodesbeach1Img from '../assets/images/holidays/pefkos-rhodes/pefkosbeachview1.jpg';
+import pefkosrhodescats1Img from '../assets/images/holidays/pefkos-rhodes/pefkosrhodescats1.jpg';
+import pefkosrhodescats2Img from '../assets/images/holidays/pefkos-rhodes/pefkosrhodescats2.jpg';
+import pefkosrhodescats3Img from '../assets/images/holidays/pefkos-rhodes/pefkosrhodescats3.jpg';
+import pefkosrhodesarchImg from '../assets/images/holidays/pefkos-rhodes/rhodesoldtownarch.jpg';
+import pefkosrhodesstreetImg from '../assets/images/holidays/pefkos-rhodes/rhodesoldtownstreet.jpg';
+
+
+
+const rawRecentPhotos = [
+  { img: cowImg, alt: "A black and white cow stood in a grassy field, framed by the evening sun." },
+  { img: ducklingsImg, alt: "Two ducklings side by side in a pond." },
+  { img: longhaircatImg, alt: "A long-haired cat sitting outside on some gravel." },
+];
+
+const recentPhotos = await Promise.all(
+  rawRecentPhotos.map(async (photo) => {
+    // 1. The small carousel thumbnail (Fast loading)
+    const thumb = await getImage({ src: photo.img, format: 'webp', width: 600, quality: 80 });
+    // 2. The large lightbox image (High quality)
+    const full = await getImage({ src: photo.img, format: 'webp', width: 1600, quality: 90 });
+    
+    return { 
+      src: thumb.src,       // Passes the thumbnail to the main img tag
+      fullSrc: full.src,    // Passes the high-res to the lightbox
+      alt: photo.alt 
+    };
+  })
+);
+
+const rawMoreCatPhotos = [
+  { img: poppy2Img, alt: "Poppy, a British Blue, laying on a windowsill." },
+  { img: luna2Img, alt: "Luna, curled up asleep." },
+  { img: penny2Img, alt: "Penny, a black cat, fast asleep." },
+  { img: poppy3Img, alt: "Poppy, a British Blue, fast asleep." },
+];
+
+const moreCatPhotos = await Promise.all(
+  rawMoreCatPhotos.map(async (photo) => {
+    // 1. The small carousel thumbnail (Fast loading)
+    const thumb = await getImage({ src: photo.img, format: 'webp', width: 600, quality: 80 });
+    // 2. The large lightbox image (High quality)
+    const full = await getImage({ src: photo.img, format: 'webp', width: 1600, quality: 90 });
+    
+    return { 
+      src: thumb.src,       // Passes the thumbnail to the main img tag
+      fullSrc: full.src,    // Passes the high-res to the lightbox
+      alt: photo.alt 
+    };
+  })
+);
+
+const rawPraguePhotos = [
+  { img: praguegoldceilingImg, alt: "Gold ceiling in a Prague museum, with a circular sky light." },
+  { img: praguebuilding1Img, alt: "A closer look at the domed roof of a building in Prague." },
+  { img: praguemeerkatImg, alt: "A single Meerkat stood on their back legs in Prague." },
+  { img: praguer2d2Img, alt: "R2D2 in Prague." },
+  { img: praguestaircaseImg, alt: "Staircase in a Prague museum." },
+  { img: pragueviewImg, alt: "View of some classic Prague architecture." },
+  { img: praguemuseumImg, alt: "A view of the exterior of the main museum in Prague." },
+  { img: pragueriverImg, alt: "A closer up photo of a river in Prague." },
+  { img: praguetramImg, alt: "A classic tram going down a street in Prague." },
+];
+
+const praguePhotos = await Promise.all(
+  rawPraguePhotos.map(async (photo) => {
+    // 1. The small carousel thumbnail (Fast loading)
+    const thumb = await getImage({ src: photo.img, format: 'webp', width: 600, quality: 80 });
+    // 2. The large lightbox image (High quality)
+    const full = await getImage({ src: photo.img, format: 'webp', width: 1600, quality: 90 });
+    
+    return { 
+      src: thumb.src,       // Passes the thumbnail to the main img tag
+      fullSrc: full.src,    // Passes the high-res to the lightbox
+      alt: photo.alt 
+    };
+  })
+);
+
+const rawPefkosRhodesPhotos = [
+  { img: pefkosrhodesrock1Img, alt: "Gold ceiling in a Prague museum, with a circular sky light." },
+  { img: pefkosrhodesrock2Img, alt: "A closer look at the domed roof of a building in Prague." },
+  { img: pefkosrhodesbeach1Img, alt: "A single Meerkat stood on their back legs in Prague." },
+  { img: pefkosrhodescats1Img, alt: "R2D2 in Prague." },
+  { img: pefkosrhodescats2Img, alt: "Staircase in a Prague museum." },
+  { img: pefkosrhodescats3Img, alt: "View of some classic Prague architecture." },
+  { img: pefkosrhodesarchImg, alt: "A view of the exterior of the main museum in Prague." },
+  { img: pefkosrhodesstreetImg, alt: "A classic tram going down a street in Prague." },
+];
+
+const pefkosrhodesPhotos = await Promise.all(
+  rawPefkosRhodesPhotos.map(async (photo) => {
+    // 1. The small carousel thumbnail (Fast loading)
+    const thumb = await getImage({ src: photo.img, format: 'webp', width: 600, quality: 80 });
+    // 2. The large lightbox image (High quality)
+    const full = await getImage({ src: photo.img, format: 'webp', width: 1600, quality: 90 });
+    
+    return { 
+      src: thumb.src,       // Passes the thumbnail to the main img tag
+      fullSrc: full.src,    // Passes the high-res to the lightbox
+      alt: photo.alt 
+    };
+  })
+);
+
 ---
 
 <PageLayout
@@ -24,23 +154,67 @@ import CTA from '@/components/landing/CTA.astro';
     </h1>
 
     <p slot="description">
-      Some of my favourite photographs, taken by me on various trips and adventures. It's one of my favourite hobbies - whether it's taking photos of my cats, or landscapes and cityscapes when I'm out and about.
+      A selection of some of my favourite photographs I've taken. From cats, to trips abroad, there are a lot of different photos to see here.
     </p>
   </Hero>
-  <section class="py-20 bg-secondary">
-    <div class="container">
-      <h1 class="text-4xl font-bold text-foreground">Photography</h1>
-      <p class="mt-4 text-foreground-muted max-w-2xl">
-        Coming soon.
-      </p>
+  <section class="py-16 md:py-24 bg-surface-secondary border-t border-border">
+    <div class="container max-w-7xl space-y-24"> 
+
+      {/* ROW 1: Text Left, Carousel Right */}
+      <div class="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
+        <div class="w-full lg:w-2/5 text-center lg:text-left">
+          <h2 class="text-3xl md:text-4xl font-bold text-foreground">Some Recent Photos</h2>
+          <p class="text-foreground-muted mt-4 text-lg">Some of my favourite photos I've taken recently.</p>
+        </div>
+        <div class="w-full lg:w-3/5">
+          <ImageCarousel images={recentPhotos} client:visible />
+        </div>
+      </div>
+
+      {/* ROW 2: Carousel Left, Text Right */}
+      {/* flex-col-reverse ensures the text elegantly stacks ON TOP of the carousel on mobile! */}
+      <div class="flex flex-col-reverse lg:flex-row items-center gap-8 lg:gap-16">
+        <div class="w-full lg:w-3/5">
+          <ImageCarousel images={moreCatPhotos} client:visible />
+        </div>
+        <div class="w-full lg:w-2/5 text-center lg:text-right">
+          <h2 class="text-3xl md:text-4xl font-bold text-foreground">Some More Cat Photos</h2>
+          <p class="text-foreground-muted mt-4 text-lg">More photos of my cats, of course.</p>
+        </div>
+      </div>
+      
     </div>
+  </section>  
+
+  <section class="py-16 bg-background border-y border-border">
+    <div class="container max-w-6xl">
+        <div class="flex flex-col gap-6">
+          <div class="text-center lg:text-left mb-8">
+            <h1 class="text-3xl font-bold text-foreground">Holiday Photos -</h1>
+            <p class="text-foreground-muted mt-2">Photos from holidays from around the world.</p>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+            <div>
+              <div class="mb-4">
+                <h3 class="text-xl font-bold text-foreground">Prague</h3>
+                <p class="text-foreground-muted">Czech Republic, 2024.</p>
+              </div>
+              <ImageCarousel images={praguePhotos} client:visible />
+            </div>
+            <div>
+              <div class="mb-4">
+                <h3 class="text-xl font-bold text-foreground">Pefkos/Rhodes</h3>
+                <p class="text-foreground-muted">Greece, 2025.</p>
+              </div>
+              <ImageCarousel images={pefkosrhodesPhotos} client:visible />
+            </div>
+            
+            {/* Future collections will drop in perfectly right here! */}
+          </div>
+        </div>
+      </div>
   </section>
 
-  <!-- Content Section -->
-  <section class="py-16">
-    <div class="container">
-      <!-- Your content -->
-    </div>
-  </section>
   <CTA />
 </PageLayout>

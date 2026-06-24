@@ -66,7 +66,7 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
                 <DialogTrigger asChild>
                   <div 
                     onClick={() => handleImageClick(index)}
-                    className="overflow-hidden rounded-2xl border border-border bg-surface-primary shadow-sm aspect-video relative flex items-center justify-center cursor-pointer"
+                    className="overflow-hidden rounded-2xl border border-border bg-surface-primary shadow-sm aspect-[4/3] relative flex items-center justify-center cursor-pointer"
                   >
                     <Skeleton className="absolute inset-0 w-full h-full rounded-none" />
                     
