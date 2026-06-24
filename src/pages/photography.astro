@@ -41,6 +41,12 @@ import pefkosrhodescats3Img from '../assets/images/holidays/pefkos-rhodes/pefkos
 import pefkosrhodesarchImg from '../assets/images/holidays/pefkos-rhodes/rhodesoldtownarch.jpg';
 import pefkosrhodesstreetImg from '../assets/images/holidays/pefkos-rhodes/rhodesoldtownstreet.jpg';
 
+import londoniwmImg from '../assets/images/holidays/london/IWMLondon.jpg';
+import londonskylineImg from '../assets/images/holidays/london/londonskyline.jpg';
+import londonnhmskeletonImg from '../assets/images/holidays/london/nhmskeleton.jpg';
+import londonswanImg from '../assets/images/holidays/london/swanlondon.jpg';
+import londonvictoriatheatreImg from '../assets/images/holidays/london/victoriatheatre.jpg';
+
 
 
 const rawRecentPhotos = [
@@ -58,7 +64,9 @@ const recentPhotos = await Promise.all(
     
     return { 
       src: thumb.src,       // Passes the thumbnail to the main img tag
-      fullSrc: full.src,    // Passes the high-res to the lightbox
+      fullSrc: full.src, 
+      width: full.attributes.width,
+      height: full.attributes.height,   // Passes the high-res to the lightbox
       alt: photo.alt 
     };
   })
@@ -80,7 +88,9 @@ const moreCatPhotos = await Promise.all(
     
     return { 
       src: thumb.src,       // Passes the thumbnail to the main img tag
-      fullSrc: full.src,    // Passes the high-res to the lightbox
+      fullSrc: full.src,
+      width: full.attributes.width,
+      height: full.attributes.height,    // Passes the high-res to the lightbox
       alt: photo.alt 
     };
   })
@@ -107,7 +117,9 @@ const praguePhotos = await Promise.all(
     
     return { 
       src: thumb.src,       // Passes the thumbnail to the main img tag
-      fullSrc: full.src,    // Passes the high-res to the lightbox
+      fullSrc: full.src,
+      width: full.attributes.width,
+      height: full.attributes.height,    // Passes the high-res to the lightbox
       alt: photo.alt 
     };
   })
@@ -133,12 +145,38 @@ const pefkosrhodesPhotos = await Promise.all(
     
     return { 
       src: thumb.src,       // Passes the thumbnail to the main img tag
-      fullSrc: full.src,    // Passes the high-res to the lightbox
+      fullSrc: full.src,
+      width: full.attributes.width,
+      height: full.attributes.height,    // Passes the high-res to the lightbox
       alt: photo.alt 
     };
   })
 );
 
+const rawLondonPhotos = [
+  { img: londoniwmImg, alt: "Gold ceiling in a Prague museum, with a circular sky light." },
+  { img: londonskylineImg, alt: "A closer look at the domed roof of a building in Prague." },
+  { img: londonnhmskeletonImg, alt: "A single Meerkat stood on their back legs in Prague." },
+  { img: londonswanImg, alt: "R2D2 in Prague." },
+  { img: londonvictoriatheatreImg, alt: "Staircase in a Prague museum." },
+];
+
+const londonPhotos = await Promise.all(
+  rawLondonPhotos.map(async (photo) => {
+    // 1. The small carousel thumbnail (Fast loading)
+    const thumb = await getImage({ src: photo.img, format: 'webp', width: 600, quality: 80 });
+    // 2. The large lightbox image (High quality)
+    const full = await getImage({ src: photo.img, format: 'webp', width: 1600, quality: 90 });
+    
+    return { 
+      src: thumb.src,       // Passes the thumbnail to the main img tag
+      fullSrc: full.src,
+      width: full.attributes.width,
+      height: full.attributes.height,    // Passes the high-res to the lightbox
+      alt: photo.alt 
+    };
+  })
+);
 ---
 
 <PageLayout
@@ -188,32 +226,45 @@ const pefkosrhodesPhotos = await Promise.all(
 
   <section class="py-16 bg-background border-y border-border">
     <div class="container max-w-6xl">
-        <div class="flex flex-col gap-6">
-          <div class="text-center lg:text-left mb-8">
-            <h1 class="text-3xl font-bold text-foreground">Holiday Photos -</h1>
-            <p class="text-foreground-muted mt-2">Photos from holidays from around the world.</p>
+      <div class="flex flex-col gap-6">
+        <div class="text-center lg:text-left mb-8">
+          <h1 class="text-3xl font-bold text-foreground">Holiday Photos -</h1>
+          <p class="text-foreground-muted mt-2">Photos from holidays from around the world.</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+          
+          {/* 1. Prague */}
+          <div>
+            <div class="mb-4">
+              <h3 class="text-xl font-bold text-foreground">Prague</h3>
+              <p class="text-foreground-muted">Czech Republic, 2024.</p>
+            </div>
+            <ImageCarousel images={praguePhotos} client:visible />
           </div>
           
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
-            <div>
-              <div class="mb-4">
-                <h3 class="text-xl font-bold text-foreground">Prague</h3>
-                <p class="text-foreground-muted">Czech Republic, 2024.</p>
-              </div>
-              <ImageCarousel images={praguePhotos} client:visible />
+          {/* 2. Pefkos/Rhodes */}
+          <div>
+            <div class="mb-4">
+              <h3 class="text-xl font-bold text-foreground">Pefkos/Rhodes</h3>
+              <p class="text-foreground-muted">Greece, 2025.</p>
             </div>
-            <div>
-              <div class="mb-4">
-                <h3 class="text-xl font-bold text-foreground">Pefkos/Rhodes</h3>
-                <p class="text-foreground-muted">Greece, 2025.</p>
-              </div>
-              <ImageCarousel images={pefkosrhodesPhotos} client:visible />
-            </div>
-            
-            {/* Future collections will drop in perfectly right here! */}
+            <ImageCarousel images={pefkosrhodesPhotos} client:visible />
           </div>
+          
+          {/* 3. London (FIXED: Added the missing wrapper div!) */}
+          <div>
+            <div class="mb-4">
+              <h3 class="text-xl font-bold text-foreground">London</h3>
+              <p class="text-foreground-muted">United Kingdom, 2025.</p>
+            </div>
+            <ImageCarousel images={londonPhotos} client:visible />
+          </div>
+          
+          {/* Future collections will drop in perfectly right here! */}
         </div>
       </div>
+    </div>
   </section>
 
   <CTA />

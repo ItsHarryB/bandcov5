@@ -111,48 +111,38 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
           <CarouselContent className="h-full ml-0">
             {images.map((image, index) => (
               <CarouselItem key={index} className="h-full flex items-center justify-center pl-0">
-                <div className="relative flex items-center justify-center w-full h-full p-4 md:p-8">
+                
+                <DialogClose asChild>
+                  <div className="absolute inset-0 z-0 cursor-default" />
+                </DialogClose>
+
+                <div className="relative z-10 flex items-center justify-center w-full h-full p-4 md:p-8 pointer-events-none">
                   
-                  <DialogClose asChild>
-                    <div className="absolute inset-0 z-0 cursor-default" />
-                  </DialogClose>
-
-                  {/* FIX: We use a fixed-size container (w-[95vw] md:w-[85vw] lg:w-[75vw] aspect-[4/3]).
-                    Because all your images are 4:3, this container perfectly matches their shape.
-                    Every single slide will now be this exact size, regardless of the photo's native resolution.
-                  */}
-                  {/* FIX: We use a mathematically perfect dynamic width that respects BOTH max viewport width and max viewport height.
-                      By using CSS min(), the aspect ratio never breaks, so borders are mathematically impossible. */}
-                  <div 
-                    className="relative z-10 group/lightbox pointer-events-auto transform-gpu will-change-transform aspect-[4/3] rounded-lg shadow-2xl drop-shadow-2xl overflow-hidden w-[min(95vw,calc(85vh*4/3))] md:w-[min(85vw,calc(85vh*4/3))] lg:w-[min(75vw,calc(85vh*4/3))]"
-                  >
+                  {/* PROPER OPTION 1 FIX:
+                      Using w-fit h-fit mx-auto completely shrink-wraps the native image tag.
+                      This guarantees absolutely zero empty bars and mathematically prevents any clipping.
+                      The buttons will stay perfectly anchored to the true edges of the photo. */}
+                  <div className="relative group/lightbox pointer-events-auto transform-gpu will-change-transform rounded-lg shadow-2xl drop-shadow-2xl flex items-center justify-center w-fit h-fit mx-auto">
                     
-                    {/* The Fast Thumbnail (Fades out) */}
-                    <div 
-                      className="absolute inset-0 w-full h-full bg-center bg-no-repeat bg-contain transition-opacity duration-500 pointer-events-none"
-                      style={{ 
-                        backgroundImage: `url(${image.src})`,
-                        opacity: loadedImages[`lightbox-${index}`] ? 0 : 1 
-                      }}
-                    />
-
-                    {/* The High-Res Image (Fades in) */}
-                    <div 
-                      className="absolute inset-0 w-full h-full bg-center bg-no-repeat bg-contain cursor-grab active:cursor-grabbing transition-opacity duration-300"
-                      style={{ 
-                        backgroundImage: `url(${image.fullSrc})`,
-                        opacity: loadedImages[`lightbox-${index}`] ? 1 : 0 
-                      }}
-                    />
-
-                    {/* Invisible image tag just to trigger the onLoad event for the fade */}
+                    {/* The native high-res image sets the physical boundaries of the wrapper natively. */}
                     <img 
                       src={image.fullSrc} 
                       alt={image.alt} 
+                      width={image.width}
+                      height={image.height}
                       onLoad={() => handleImageLoad(`lightbox-${index}`)}
-                      className="hidden"
+                      className="relative w-auto h-auto max-h-[85vh] max-w-[95vw] md:max-w-[85vw] lg:max-w-[75vw] object-contain rounded-lg cursor-grab active:cursor-grabbing transition-opacity duration-300"
+                      style={{ opacity: loadedImages[`lightbox-${index}`] ? 1 : 0 }}
                       loading="lazy"
                       decoding="async"
+                    />
+
+                    {/* The thumbnail exactly overlays the footprint defined by the high-res image. */}
+                    <img 
+                      src={image.src} 
+                      alt="" 
+                      className="absolute inset-0 w-full h-full object-cover rounded-lg pointer-events-none transition-opacity duration-500"
+                      style={{ opacity: loadedImages[`lightbox-${index}`] ? 0 : 1 }}
                     />
 
                     <DialogClose className="absolute top-3 right-3 md:top-4 md:right-4 z-50 p-2 rounded-full bg-background/60 hover:bg-background backdrop-blur-md transition-all text-foreground outline-none opacity-100 md:opacity-0 md:group-hover/lightbox:opacity-100">
@@ -163,7 +153,6 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
                     <CarouselPrevious className="hidden md:flex w-12 h-12 [&>svg]:w-6 [&>svg]:h-6 left-3 md:left-4 bg-background/60 hover:bg-background border-none shadow-md backdrop-blur-md z-50 opacity-100 md:opacity-0 transition-opacity duration-300 delay-500 md:group-hover/lightbox:opacity-100 md:group-hover/lightbox:delay-0 disabled:opacity-0 disabled:hidden" />
                     <CarouselNext className="hidden md:flex w-12 h-12 [&>svg]:w-6 [&>svg]:h-6 right-3 md:right-4 bg-background/60 hover:bg-background border-none shadow-md backdrop-blur-md z-50 opacity-100 md:opacity-0 transition-opacity duration-300 delay-500 md:group-hover/lightbox:opacity-100 md:group-hover/lightbox:delay-0 disabled:opacity-0 disabled:hidden" />
                   </div>
-
                 </div>
               </CarouselItem>
             ))}
