@@ -65,7 +65,7 @@ const siteConfig: SiteConfig = {
     country: 'United Kingdom',
   },
   socialLinks: [
-    'https://github.com/ItsHarryB',
+    'https://github.com/web-bandco',
     'https://www.vinted.co.uk/member/272494517',
     'https://www.linkedin.com/in/harry-brighton-8a2b971a4/',
     'https://www.ebay.co.uk/usr/itsharryb',

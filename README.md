@@ -44,7 +44,7 @@ For full terms and conditions for the Brighton and Co site, please see [here](ht
 MIT — see [LICENCE](LICENSE) for details.
 
 ---
-**Links**: [GitHub](https://github.com/ItsHarryB) | [Astro](https://docs.astro.build) | [Tailwind v4](https://tailwindcss.com/docs)
+**Links**: [GitHub](https://github.com/web-bandco) | [Astro](https://docs.astro.build) | [Tailwind v4](https://tailwindcss.com/docs)
 
 **Brighton and Co Version 5, by [Harry B](https://brightonandco.co.uk)**
 
